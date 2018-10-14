@@ -27,7 +27,6 @@
         <a href="/" class="zu-top-link-logo" id="zh-top-link-logo" data-za-c="view_home" data-za-a="visit_home" data-za-l="top_navigation_zhihu_logo">牛客</a>
         <div class="top-nav-profile">
             <!--#if(!$user)-->
-            <b th:text="${user.userNickname}"></b>
             <div th:if="(${user}==null)">
                 <ul class="topnav-noauth clearfix">
                     <li>

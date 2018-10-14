@@ -1,14 +1,12 @@
 package com.example.Genius.DAO;
 
 import com.example.Genius.model.LoginTicket;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
+@Mapper
 public interface LoginTicketMapper {
 
-    @Insert("insert into login_ticket(user_id,ticket,expired,status)values(#{userId},#{ticket},#{expired},#{status})")
+    @Insert("insert into login_ticket(userId,ticket,expired,status)values(#{userId},#{ticket},#{expired},#{status})")
     int add(LoginTicket loginTicket);
 
     @Select("select * from login_ticket where ticket = #{ticket}")
