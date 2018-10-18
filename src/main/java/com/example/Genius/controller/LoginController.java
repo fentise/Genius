@@ -1,5 +1,6 @@
 package com.example.Genius.controller;
 
+import com.example.Genius.Contants.Contants;
 import com.example.Genius.DAO.UserMapper;
 import com.example.Genius.model.User;
 import com.example.Genius.service.UserService;
@@ -35,8 +36,8 @@ public class LoginController {
                            Model model){
         Map<String,Object> map = userService.register(userNickname,userEmail,password);
         if(map.isEmpty()) {
-            User user = userMapper.selectByUserEmail(userEmail);
-            model.addAttribute("user",user);
+            //User user = userMapper.selectByUserEmail(userEmail);
+            //model.addAttribute("user",user);
             return "redirect:/index";
         }
         else
@@ -54,14 +55,14 @@ public class LoginController {
                         HttpServletResponse response) {
         Map<String,Object> map = userService.login(userEmail,password,rememberMe);
         User user = userMapper.selectByUserEmail(userEmail);
-        if(map.containsKey("loginTicket")) {
-            Cookie cookie = new Cookie("loginTicket",map.get("loginTicket").toString());
+        if(map.containsKey(Contants.cookies.LOGIN_TICKET_NAME)) {
+            Cookie cookie = new Cookie(Contants.cookies.LOGIN_TICKET_NAME,map.get(Contants.cookies.LOGIN_TICKET_NAME).toString());
             cookie.setPath("/"); // 设置为在同一应用服务器下共享
             if(rememberMe){
                 cookie.setMaxAge(3600*24*7);
             }
             response.addCookie(cookie);
-            return "redirect:/index";
+            return "redirect:/profile";
         }
         else{
             model.addAttribute("msg",map.get("msg"));
@@ -74,6 +75,7 @@ public class LoginController {
     public String logout(Model model,
                          @CookieValue("ticket") String ticket,
                          HttpServletResponse response){
+        userService.logout(ticket);
         return "logout successfully";
     }
 

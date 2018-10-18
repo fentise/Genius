@@ -16,4 +16,7 @@ public interface UserMapper {
     @Select("select * from user where userEmail = #{userEmail}")
     User selectByUserEmail(@Param("userEmail") String userEmail );
 
+    @Select("select * from user where oId = #{userId}")
+    User selectByUserId(@Param("userId") int userId);
+
 }

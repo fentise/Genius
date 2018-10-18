@@ -1,5 +1,6 @@
 package com.example.Genius.service;
 
+import com.example.Genius.Contants.Contants;
 import com.example.Genius.DAO.LoginTicketMapper;
 import com.example.Genius.DAO.UserMapper;
 import com.example.Genius.model.LoginTicket;
@@ -106,11 +107,11 @@ public class UserService {
         }
 
         String loginTicket = addLoginTicket(user.getoId(),rememberMe);
-        map.put("loginTicket",loginTicket);
+        map.put(Contants.cookies.LOGIN_TICKET_NAME,loginTicket);
         return map;
     }
 
-    public String addLoginTicket(int userId,boolean rememberMe){
+    private String addLoginTicket(int userId,boolean rememberMe){
         LoginTicket loginTicket = new LoginTicket();
         loginTicket.setUserId(userId);
         Date date = new Date();
@@ -121,14 +122,14 @@ public class UserService {
             date.setTime(date.getTime()+1000*3600*24);//默认保持一天 TODO:其实这里应该设置为离线后保持五分钟的免登录时间
             loginTicket.setExpired(date);
         }
-        loginTicket.setStatus(0);
+        loginTicket.setStatus(Contants.loginTicket.LOGIN_STATUS);
         loginTicket.setTicket(UUID.randomUUID().toString().replaceAll("-",""));
         loginTicketMapper.add(loginTicket);
         return loginTicket.getTicket();
     }
 
-    public boolean login(String loginTicket){
-        loginTicketMapper.updateStatus(loginTicket,1);
+    public boolean logout(String loginTicket){
+        loginTicketMapper.updateStatus(loginTicket,Contants.loginTicket.LOGOUT_STATUS);
         return true;
     }
 
