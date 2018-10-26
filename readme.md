@@ -136,10 +136,10 @@ targetOwner就是你自己
     [参照博文](https://blog.csdn.net/do_bset_yourself/article/details/61425922)
     具体看时序图演示
 <div align="center">
-    <img src="other/pushAndPull1.jpg" width="150px">
+    <img src="other/pushAndPull1.jpg" >
 </div>
 <div align="center">
-    <img src="other/pushAndPull2.jpg" width="150px">
+    <img src="other/pushAndPull2.jpg" >
 </div>
 
 ### 后期爬虫爬取数据并采用分词框架进行分词分析和数据导入
