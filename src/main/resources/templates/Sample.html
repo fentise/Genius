@@ -4,13 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
-
-
 </head>
 <body>
-<div th:each="user :${users}">
-<p th:text="${user.userNickname}">
+<div th:each="vo :${vos}">
+<p th:text="${vo['user'].userNickname}">
 3333
 </p>
 </div>

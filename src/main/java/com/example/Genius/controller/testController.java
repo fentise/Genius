@@ -1,7 +1,6 @@
 package com.example.Genius.controller;
 
 import com.example.Genius.model.User;
-import com.example.Genius.model.viewObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,22 +8,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class testController {
 
     @RequestMapping("/test")
     String test(Model model){
-        List<User> vos = new ArrayList<>();
+        List<HashMap<String,Object>> vos = new ArrayList<>();
         for(int i = 0;i<100;i++){
-            //viewObject vo = new viewObject();
+            HashMap<String,Object> vo = new HashMap<>();
             User user = new User();
             user.setUserNickname("user"+String.valueOf(i));
-            //vo.set("user",user);
-            vos.add(user);
+            vo.put("user",user);
+            vos.add(vo);
         }
-        model.addAttribute("users",vos);
+        model.addAttribute("vos",vos);
         return "Sample";
     }
 }
