@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div>
+    <!--/*@thymesVar id="name" type="java.lang.String"*/-->
+    <p th:text="'Hello！, ' + ${name} + '!'">333</p>                 <!--读取 String -->
+
+    <tr th:each="article : ${articleList}">                            <!--读取 List<article>  article是一个对象 -->
+        <!--article.articleTitle 实际上是 article.getArticleTitle() 的缩写 -->
+        <td th:text="${article.articleTitle}">1</td>
+    </tr>
+
+    <tr th:each="map : ${mapList}">
+        <td th:text="${map.key2}">1</td>
+    </tr>
+
+    分割线-------------------------------------------------------
+
+    <tr th:each="vo,iterStat: ${vos}">                        <!--读取 List<ViewObject>  viewObject是一个对象 -->
+        <!--此处不能像上述article那样的简写读取内容，因为viewObject里的get方法有参数   -->
+        <td th:text="${vo.get('user').userNickname}"></td>
+        <td th:text="${iterStat.current.get('user').userNickname}"></td>
+    </tr>
+
+</div>
+</body>
+</html>
+
+

@@ -1,20 +1,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:replace="header :: html"></div>
-<div class="zg-wrap zu-main clearfix " role="main">
-    <div class="zu-main-content">
-        <div class="zu-main-content-inner">
-            <div class="zg-section" id="zh-home-list-title">
-                <i class="zg-icon zg-icon-feedlist"></i>最新动态
-                <input type="hidden" id="is-topstory">
-                <span class="zg-right zm-noti-cleaner-setting" style="list-style:none">
+    <div class="zg-wrap zu-main clearfix " role="main">
+        <div class="zu-main-content">
+            <div class="zu-main-content-inner">
+                <div class="zg-section" id="zh-home-list-title">
+                    <i class="zg-icon zg-icon-feedlist"></i>最新动态
+                    <input type="hidden" id="is-topstory">
+                    <span class="zg-right zm-noti-cleaner-setting" style="list-style:none">
                         <a href="https://nowcoder.com/settings/filter" class="zg-link-gray-normal">
                             <i class="zg-icon zg-icon-settings"></i>设置</a></span>
-            </div>
-            <div class="zu-main-feed-con navigable" data-feedtype="topstory" id="zh-question-list" data-widget="navigable" data-navigable-options="{&quot;items&quot;:&quot;&gt; .zh-general-list .feed-content&quot;,&quot;offsetTop&quot;:-82}">
-                <a href="javascript:;" class="zu-main-feed-fresh-button" id="zh-main-feed-fresh-button" style="display:none"></a>
-                <div id="js-home-feed-list" class="zh-general-list topstory clearfix" data-init="{&quot;params&quot;: {}, &quot;nodename&quot;: &quot;TopStory2FeedList&quot;}" data-delayed="true" data-za-module="TopStoryFeedList">
+                </div>
+                <div class="zu-main-feed-con navigable" data-feedtype="topstory" id="zh-question-list" data-widget="navigable" data-navigable-options="{&quot;items&quot;:&quot;&gt; .zh-general-list .feed-content&quot;,&quot;offsetTop&quot;:-82}">
+                    <a href="javascript:;" class="zu-main-feed-fresh-button" id="zh-main-feed-fresh-button" style="display:none"></a>
+                    <div id="js-home-feed-list" class="zh-general-list topstory clearfix" data-init="{&quot;params&quot;: {}, &quot;nodename&quot;: &quot;TopStory2FeedList&quot;}" data-delayed="true" data-za-module="TopStoryFeedList">
 
-                    <tr th:each="vo : ${vos}">
+                        <tr th:each="vo : ${vos}">
                         <div class="feed-item folding feed-item-hook feed-item-2
                         " feed-item-a="" data-type="a" id="feed-2" data-za-module="FeedItem" data-za-index="">
                             <meta itemprop="ZReactor" data-id="389034" data-meta="{&quot;source_type&quot;: &quot;promotion_answer&quot;, &quot;voteups&quot;: 4168, &quot;comments&quot;: 69, &quot;source&quot;: []}">
@@ -48,7 +48,7 @@
                                                     <span class="label sr-only">反对，不会显示你的姓名</span></button>
                                             </div>
                                             <div class="zm-item-answer-author-info">
-                                                <a class="author-link" data-tip="p$b$amuro1230" target="_blank" th:href="'/user/' + ${vo.get('user').oId}"><td th:text="${vo.get('user').userNickname}"></td></a>
+                                                <td class="author-link" data-tip="p$b$amuro1230" target="_blank" href="/user/${vo.get('user').oId}"><td th:text="${vo.get('user').userNickname}"></td></a>
                                                 <span title="从互联网行业出来在做旅行的前对冲基金从业者" class="bio">，<td th:text="${vo.get('article').createTime}"></td></span></div>
                                             <div class="zm-item-vote-info" data-votecount="4168" data-za-module="VoteInfo">
                                                 <span class="voters text">
@@ -85,12 +85,12 @@
                             </div>
                         </div>
 
-                    </tr>
+                        </tr>
 
-                </div>
-                <a href="javascript:;" id="zh-load-more" data-method="next" class="zg-btn-white zg-r3px zu-button-more" style="">更多</a></div>
+                    </div>
+                    <a href="javascript:;" id="zh-load-more" data-method="next" class="zg-btn-white zg-r3px zu-button-more" style="">更多</a></div>
+            </div>
         </div>
     </div>
-</div>
 </html>
 
