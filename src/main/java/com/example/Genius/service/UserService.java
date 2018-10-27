@@ -133,5 +133,7 @@ public class UserService {
         return true;
     }
 
-
+    public User getUserById(int id) {
+        return userMapper.selectByUserId(id);
+    }
 }

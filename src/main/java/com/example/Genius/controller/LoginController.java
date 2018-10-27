@@ -28,13 +28,14 @@ public class LoginController {
     public String registerAndLogin(){
         return "login";
     }
-    @RequestMapping(path={"/register"},method ={RequestMethod.POST,RequestMethod.GET})
+
+    @RequestMapping(path={"/register"},method ={RequestMethod.POST})
     public String register(@RequestParam(value="userNickname",defaultValue="1") String userNickname,
                            @RequestParam(value="userEmail") String userEmail,
                            @RequestParam(value="password") String password,
                            HttpServletResponse response,
                            Model model){
-        Map<String,Object> map = userService.register(userNickname,userEmail,password);
+        Map<String,Object> map = userService.register(userNickname,userEmail,password);           //调用userService接口进行注册
         if(map.isEmpty()) {
             //User user = userMapper.selectByUserEmail(userEmail);
             //model.addAttribute("user",user);
@@ -47,7 +48,7 @@ public class LoginController {
             }
     }
 
-    @RequestMapping(path="/login",method={RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(path="/login",method={RequestMethod.POST})
     public String login(@RequestParam(value = "userEmail") String userEmail,
                         @RequestParam(value = "password") String password,
                         @RequestParam(value="rememberMe",defaultValue = "false") Boolean rememberMe,

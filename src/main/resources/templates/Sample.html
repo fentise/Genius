@@ -9,10 +9,10 @@
 
 </head>
 <body>
-<div th:each="user :${users}">
-<p th:text="${user.userNickname}">
-3333
-</p>
+<div th:each="viewObject,vo :${vos}">
+    <td th:text="${vo.key1}">
+        3333
+    </td>
 </div>
 </body>
 </html>
