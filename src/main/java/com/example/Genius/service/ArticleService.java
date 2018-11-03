@@ -12,10 +12,9 @@ import java.util.List;
 public class ArticleService {
 
     @Autowired
-    ArticleDAO articleDAO;
+    private ArticleDAO articleDAO;
 
     public List<Article> selectLatestArticles(int articleAuthorId, int offset, int limit) {
-
         return articleDAO.selectLatestArticles(articleAuthorId,offset,limit);
     }
 }
