@@ -15,6 +15,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
+import static com.example.Genius.Contants.Contants.cookies.LOGIN_TICKET_NAME;
+
 @Controller
 public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
@@ -29,55 +31,65 @@ public class LoginController {
         return "login";
     }
 
-    @RequestMapping(path={"/register"},method ={RequestMethod.POST})
-    public String register(@RequestParam(value="userNickname",defaultValue="1") String userNickname,
+    @RequestMapping(path={"/register/"},method ={RequestMethod.POST})
+    public String register(@RequestParam(value="userNickname",defaultValue="defaultName") String userNickname,
                            @RequestParam(value="userEmail") String userEmail,
                            @RequestParam(value="password") String password,
                            HttpServletResponse response,
                            Model model){
-        Map<String,Object> map = userService.register(userNickname,userEmail,password);           //调用userService接口进行注册
-        if(map.isEmpty()) {
-            //User user = userMapper.selectByUserEmail(userEmail);
-            //model.addAttribute("user",user);
-            return "redirect:/index";
-        }
-        else
+
+        try {
+            Map<String,Object> map = userService.register(userNickname,userEmail,password);           //调用userService接口进行注册
+            if(map.containsKey(LOGIN_TICKET_NAME))          //表明注册成功
             {
-                model.addAttribute("msg",map.get("msg"));
-                return "error";
+                Cookie cookie = new Cookie(LOGIN_TICKET_NAME,map.get(LOGIN_TICKET_NAME).toString());
+                cookie.setPath("/");        // 设置为在同一应用服务器下共享
+                response.addCookie(cookie);         //登陆成功，用户处于登陆状态，下发ticket, 返回首页
+
+                return "redirect:/";               //注册成功，用户处于登陆状态，下发ticket, 返回首页。并進行渲染
             }
+            else{
+                model.addAttribute("msg",map.get("msg").toString());
+                return "login";                                 //注册不成功，返回首页，继续注册
+            }
+        }catch (Exception e) {
+            logger.error("注册异常" + e.getMessage());
+            return "login";
+        }
     }
 
-    @RequestMapping(path="/login",method={RequestMethod.POST})
+    @RequestMapping(path="/login/",method={RequestMethod.POST})
     public String login(@RequestParam(value = "userEmail") String userEmail,
                         @RequestParam(value = "password") String password,
                         @RequestParam(value="rememberMe",defaultValue = "false") Boolean rememberMe,
                         Model model,
                         HttpServletResponse response) {
-        Map<String,Object> map = userService.login(userEmail,password,rememberMe);
-        User user = userMapper.selectByUserEmail(userEmail);
-        if(map.containsKey(Contants.cookies.LOGIN_TICKET_NAME)) {
-            Cookie cookie = new Cookie(Contants.cookies.LOGIN_TICKET_NAME,map.get(Contants.cookies.LOGIN_TICKET_NAME).toString());
-            cookie.setPath("/"); // 设置为在同一应用服务器下共享
-            if(rememberMe){
-                cookie.setMaxAge(3600*24*7);
+
+        try{
+            Map<String,Object> map = userService.login(userEmail,password,rememberMe);
+            if(map.containsKey(LOGIN_TICKET_NAME)) {
+                Cookie cookie = new Cookie(LOGIN_TICKET_NAME,map.get(LOGIN_TICKET_NAME).toString());
+                cookie.setPath("/");        // 设置为在同一应用服务器下共享
+                response.addCookie(cookie);         //登陆成功，用户处于登陆状态，下发ticket, 返回首页
+
+                return "redirect:/";
             }
-            response.addCookie(cookie);
-            return "redirect:/profile";
-        }
-        else{
-            model.addAttribute("msg",map.get("msg"));
-            return "error";
+            else{
+                model.addAttribute("msg",map.get("msg").toString());
+                return "login";                                 //登陆不成功，返回首页，继续登陆
+            }
+        }catch (Exception e){
+            logger.error("注册异常" + e.getMessage());
+            return "login";
         }
     }
 
-    @RequestMapping(path = "/logout",method={RequestMethod.GET,RequestMethod.POST})
-    @ResponseBody
+    @RequestMapping(path = "/logout",method={RequestMethod.GET})
     public String logout(Model model,
-                         @CookieValue("ticket") String ticket,
+                         @CookieValue(LOGIN_TICKET_NAME) String ticket,            //此参数从客户端发送过来
                          HttpServletResponse response){
         userService.logout(ticket);
-        return "logout successfully";
+        return "redirect:/";
     }
 
     @ExceptionHandler()

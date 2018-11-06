@@ -28,6 +28,7 @@ public class PassportInterceptor implements HandlerInterceptor {
     UserMapper userMapper;
     @Autowired
     LoginTicketMapper loginTicketMapper;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String ticket = null;
@@ -43,22 +44,26 @@ public class PassportInterceptor implements HandlerInterceptor {
             LoginTicket loginTicket = loginTicketMapper.selectByTicket(ticket);
             if(loginTicket == null || loginTicket.getExpired().before(new Date()) || loginTicket.getStatus() != Contants.loginTicket.LOGIN_STATUS ){
                 logger.error("login check fail return false");
-                return false;
+                return true;
             }
 
             User user = userMapper.selectByUserId(loginTicket.getUserId());
-            hostHolder.setCurrentUsers(user);
-            logger.error("login check successful and userId ="+user.getoId());
+
+            hostHolder.setCurrentUsers(user);            //将当前登陆用户添加到上下文
+
+        //    logger.error("login check successful and userId =" + user.getoId());
+
             return true;
         }
         logger.info("check fail cookies中没有ticket字段");
-        return false;
+        return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        modelAndView.addObject("user", hostHolder.getCurrentUser());
-        //FIXME：登录页面跳转时这里会报空指针异常
+        if(modelAndView != null && hostHolder.getCurrentUser() != null)
+            modelAndView.addObject("user", hostHolder.getCurrentUser());
+            //FIXME：登录页面跳转时这里会报空指针异常
     }
 
     @Override

@@ -32,7 +32,6 @@ public class User {
         this.userStatus = userStatus;
     }
 
-
     public int getoId() {
         return oId;
     }

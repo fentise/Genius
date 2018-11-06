@@ -58,4 +58,9 @@ public class testController {
         model.addAttribute("articleList",articleList);
         return "test";
     }
+
+    @RequestMapping("/testHeader")
+    String testHeader(){
+        return "header_test";
+    }
 }

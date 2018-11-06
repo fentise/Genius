@@ -73,13 +73,18 @@ public class UserService {
             user.setUserPassword(GeneralUtils.MD5(password+user.getUserSalt()));
             userMapper.add(user);
             //return this.userMapper.add(user);
+
+         //   User user1 = userMapper.selectByUserEmail(userEmail);
+
+            String loginTicket = addLoginTicket(userMapper.selectByUserEmail(userEmail).getoId(),false);
+            map.put(Contants.cookies.LOGIN_TICKET_NAME,loginTicket);
+            return map;
             }
         catch(Exception e) {
             logger.error("Fail to insert new user into database : " + e.getMessage());
             map.put("msg", "fail to insert new user into database");
             return map;
         }
-        return map;
     }
 
     public Map<String,Object> login(String userEmail,String password,boolean rememberMe){
@@ -97,6 +102,7 @@ public class UserService {
             return map;
         }
         User user = userMapper.selectByUserEmail(userEmail);
+
         if( user == null){
             map.put("msg","该邮箱未被注册");
             return map;
@@ -106,6 +112,9 @@ public class UserService {
             return map;
         }
 
+        /**
+         * 表明用户成功登陆，就像用户下发ticket
+         */
         String loginTicket = addLoginTicket(user.getoId(),rememberMe);
         map.put(Contants.cookies.LOGIN_TICKET_NAME,loginTicket);
         return map;

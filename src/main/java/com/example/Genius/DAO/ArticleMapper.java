@@ -13,13 +13,13 @@ public interface ArticleMapper {
 
     Logger logger = LoggerFactory.getLogger(ArticleMapper.class);
 
-    @Select("select * from article limit #{limit}")
+    @Select({"select * from article limit #{limit}"})
     public List<Article> selectLatestArticle(@Param("limit") int limit);
 
-    @Insert("inset into article(articleTitle,articleAuthorId,articleContent," +
+    @Insert({"inset into article(articleTitle,articleAuthorId,articleContent," +
             "articleURL,articleReplyCount,articleLikeCount,articleViewCount,articleTopicId,articleStatus,createTime,latestUpdateTime)" +
             "value(#{articleTitle},#{articleAuthorId},#{articleContent},#{articleURL},#{articleReplyCount}," +
-            "#{articleLikeCount},#{articleViewCount},#{articleTopicId},#{articleStatus},#{createTime},#{latestUpdateTime})")
+            "#{articleLikeCount},#{articleViewCount},#{articleTopicId},#{articleStatus},#{createTime},#{latestUpdateTime})"})
     public boolean addArticle(Article article);
 
 }

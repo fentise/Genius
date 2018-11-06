@@ -8,6 +8,16 @@
 <body>
 
 <div>
+
+    <p th:text="${msg}">与世界分享你的知识、经验和见解</p>
+
+    <div th:if="${user == null}">
+        <p> user 为空</p>
+    </div>
+
+    <div th:if="${user != null}">
+        <p> user 不为空</p>
+    </div>
     <!--/*@thymesVar id="name" type="java.lang.String"*/-->
     <p th:text="'Hello！, ' + ${name} + '!'">333</p>                 <!--读取 String -->
 
