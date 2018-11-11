@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -27,7 +28,9 @@ public class LoginController {
     private UserMapper userMapper;
 
     @RequestMapping(path={"/registerAndLogin"})
-    public String registerAndLogin(){
+    public String registerAndLogin(Model model,
+                                   @RequestParam(value = "next", required = false) String next){
+        model.addAttribute("next",next);
         return "login";
     }
 
@@ -36,7 +39,8 @@ public class LoginController {
                            @RequestParam(value="userEmail") String userEmail,
                            @RequestParam(value="password") String password,
                            HttpServletResponse response,
-                           Model model){
+                           Model model,
+                           @RequestParam(value = "next", required = false) String next){
 
         try {
             Map<String,Object> map = userService.register(userNickname,userEmail,password);           //调用userService接口进行注册
@@ -46,6 +50,9 @@ public class LoginController {
                 cookie.setPath("/");        // 设置为在同一应用服务器下共享
                 response.addCookie(cookie);         //登陆成功，用户处于登陆状态，下发ticket, 返回首页
 
+                if(!StringUtils.isEmpty(next)){
+                    return "redirect:" + next;
+                }
                 return "redirect:/";               //注册成功，用户处于登陆状态，下发ticket, 返回首页。并進行渲染
             }
             else{
@@ -63,7 +70,8 @@ public class LoginController {
                         @RequestParam(value = "password") String password,
                         @RequestParam(value="rememberMe",defaultValue = "false") Boolean rememberMe,
                         Model model,
-                        HttpServletResponse response) {
+                        HttpServletResponse response,
+                        @RequestParam(value = "next", required = false) String next) {
 
         try{
             Map<String,Object> map = userService.login(userEmail,password,rememberMe);
@@ -71,6 +79,10 @@ public class LoginController {
                 Cookie cookie = new Cookie(LOGIN_TICKET_NAME,map.get(LOGIN_TICKET_NAME).toString());
                 cookie.setPath("/");        // 设置为在同一应用服务器下共享
                 response.addCookie(cookie);         //登陆成功，用户处于登陆状态，下发ticket, 返回首页
+
+                if(!StringUtils.isEmpty(next)){
+                    return "redirect:" + next;
+                }
 
                 return "redirect:/";
             }
