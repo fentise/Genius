@@ -15,7 +15,7 @@
 //
 //    @Autowired
 //    private LoginRequiredInterceptor loginRequiredInterceptor;
-//
+//      TODO: 增加权限拦截，帖子详情页，发帖等操作需要登录权限
 //    @Override
 //    public void addInterceptors(InterceptorRegistry registry) {
 //

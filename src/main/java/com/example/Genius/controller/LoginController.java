@@ -25,14 +25,15 @@ public class LoginController {
     @Autowired
     private UserDAO userDAO;
 
-    @RequestMapping(path={"/registerAndLogin"})
+    // TODO: 完善接口信息和内部逻辑
+    @RequestMapping(path={"/registerAndLogin"})  //登录或者注册页面
     public String registerAndLogin(Model model,
                                    @RequestParam(value = "next", required = false) String next){
         model.addAttribute("next",next);
         return "login";
     }
 
-    @RequestMapping(path={"/register/"},method ={RequestMethod.POST})
+    @RequestMapping(path={"/register/"},method ={RequestMethod.POST}) // 注册端
     public String register(@RequestParam(value="userNickname",defaultValue="defaultName") String userNickname,
                            @RequestParam(value="userEmail") String userEmail,
                            @RequestParam(value="password") String password,
@@ -63,7 +64,7 @@ public class LoginController {
         }
     }
 
-    @RequestMapping(path="/login/",method={RequestMethod.POST})
+    @RequestMapping(path="/login/",method={RequestMethod.POST}) // 登录端
     public String login(@RequestParam(value = "userEmail") String userEmail,
                         @RequestParam(value = "password") String password,
                         @RequestParam(value="rememberMe",defaultValue = "false") Boolean rememberMe,
@@ -94,18 +95,11 @@ public class LoginController {
         }
     }
 
-    @RequestMapping(path = "/logout",method={RequestMethod.GET})
+    @RequestMapping(path = "/logout",method={RequestMethod.GET}) // 登出端
     public String logout(Model model,
                          @CookieValue(LOGIN_TICKET_NAME) String ticket,            //此参数从客户端发送过来
                          HttpServletResponse response){
         userService.logout(ticket);
         return "redirect:/";
-    }
-
-    @ExceptionHandler()
-    @ResponseBody
-    String errorPage(Exception e){
-        logger.error("error from loginController",e.getMessage());
-        return "error from loginController \n"+e.getMessage();
     }
 }

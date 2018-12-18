@@ -27,6 +27,9 @@ import java.util.List;
 
 @Controller
 public class UserNotifyController {
+    /**
+     * @Description: 用户消息处理中心
+     */
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Autowired
     private NotifyService notifyService;

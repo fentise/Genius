@@ -13,6 +13,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 全局系统异常处理*/
+    // TODO：添加错误页
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public String errorHandler(Exception exception) {

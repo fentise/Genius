@@ -15,6 +15,7 @@ public class GlobalErrorHandler implements ErrorController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
+    //TODO:添加错误页面和错误信息反馈
     @Override
     public String getErrorPath() {
         logger.info("Error occur redict to customized page");
