@@ -1,0 +1,24 @@
+.header{
+  padding-left: 300px;
+  padding-right: 200px;
+  background-color: #1f84f7;
+  height: 70px;
+  font-style: ;
+
+}
+.header li a{
+  color: #000;
+}
+.header-main-pic{
+  height: 70px;
+}
+
+.header-navbar{
+  float: left;
+  list-style: none;
+
+}
+
+.header-navbar {
+  
+}
