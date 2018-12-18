@@ -1,8 +1,8 @@
 package com.example.Genius.service;
 
 import com.example.Genius.Contants.Contants;
-import com.example.Genius.DAO.LoginTicketMapper;
-import com.example.Genius.DAO.UserMapper;
+import com.example.Genius.DAO.LoginTicketDAO;
+import com.example.Genius.DAO.UserDAO;
 import com.example.Genius.model.LoginTicket;
 import com.example.Genius.model.User;
 import com.example.Genius.utils.GeneralUtils;
@@ -18,10 +18,10 @@ import java.util.*;
 public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
-    private UserMapper userMapper;
+    private UserDAO userDAO;
 
     @Autowired
-    private LoginTicketMapper loginTicketMapper;
+    private LoginTicketDAO loginTicketDAO;
 
     private String getUserHomePageURL(){
         return String.format("/profile/%d",new Random().nextInt(10000));
@@ -43,7 +43,7 @@ public class UserService {
                 map.put("msg","邮箱格式非法");
                 return map;
             }
-            if(userMapper.selectByUserEmail(userEmail) != null){
+            if(userDAO.selectByUserEmail(userEmail) != null){
                 map.put("msg","该邮箱已被注册");
                 return map;
             }
@@ -71,12 +71,12 @@ public class UserService {
 
             user.setUserSalt(UUID.randomUUID().toString().substring(0, 5));
             user.setUserPassword(GeneralUtils.MD5(password+user.getUserSalt()));
-            userMapper.add(user);
-            //return this.userMapper.add(user);
+            userDAO.add(user);
+            //return this.userDAO.add(user);
 
-         //   User user1 = userMapper.selectByUserEmail(userEmail);
+         //   User user1 = userDAO.selectByUserEmail(userEmail);
 
-            String loginTicket = addLoginTicket(userMapper.selectByUserEmail(userEmail).getoId(),false);
+            String loginTicket = addLoginTicket(userDAO.selectByUserEmail(userEmail).getoId(),false);
             map.put(Contants.cookies.LOGIN_TICKET_NAME,loginTicket);
             return map;
             }
@@ -101,7 +101,7 @@ public class UserService {
             map.put("msg", "登录密码不能为空");
             return map;
         }
-        User user = userMapper.selectByUserEmail(userEmail);
+        User user = userDAO.selectByUserEmail(userEmail);
 
         if( user == null){
             map.put("msg","该邮箱未被注册");
@@ -133,16 +133,16 @@ public class UserService {
         }
         loginTicket.setStatus(Contants.loginTicket.LOGIN_STATUS);
         loginTicket.setTicket(UUID.randomUUID().toString().replaceAll("-",""));
-        loginTicketMapper.add(loginTicket);
+        loginTicketDAO.add(loginTicket);
         return loginTicket.getTicket();
     }
 
     public boolean logout(String loginTicket){
-        loginTicketMapper.updateStatus(loginTicket,Contants.loginTicket.LOGOUT_STATUS);
+        loginTicketDAO.updateStatus(loginTicket,Contants.loginTicket.LOGOUT_STATUS);
         return true;
     }
 
     public User getUserById(int id) {
-        return userMapper.selectByUserId(id);
+        return userDAO.selectByUserId(id);
     }
 }

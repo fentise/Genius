@@ -1,14 +1,11 @@
 package com.example.Genius.DAO;
 
 import com.example.Genius.model.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 @Mapper
-public interface UserMapper {
+public interface UserDAO {
 
     String TABLE_NAME = " user ";
     String INSERT_FIELDS = " userNickname, userPassword, userSalt, userEmail, userHomePageURL, userRole, userStatus, userProfilePhoto";
@@ -19,12 +16,15 @@ public interface UserMapper {
 
     @Insert({"insert into ", TABLE_NAME, "(", INSERT_FIELDS ,
             ") value(#{userNickname},#{userPassword},#{userSalt},#{userEmail},#{userHomePageURL},#{userRole},#{userStatus},#{userProfilePhoto})"})
+    @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="oId")
     int add(User user);
 
     @Select({"select * from user where userEmail = #{userEmail}"})
+    @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="oId")
     User selectByUserEmail(@Param("userEmail") String userEmail );
 
     @Select({"select * from user where oId = #{userId}"})
+    @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="oId")
     User selectByUserId(@Param("userId") int userId);
 
 }

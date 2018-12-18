@@ -2,13 +2,33 @@ package com.example.Genius.model;
 
 import java.util.Date;
 
-public class message {
+public class Message {
     private int oId;
     private int senderId;
     private String messageContent;
     private Date createTime;
     private int status;
-    private int recepterId;
+    private int receiverId;
+    private int sessionId;
+    public Message(int senderId, String messageContent, Date createTime, int receiverId,int sessionId) {
+        this.senderId = senderId;
+        this.messageContent = messageContent;
+        this.createTime = createTime;
+        this.receiverId = receiverId;
+        this.sessionId = sessionId;
+    }
+
+    public Message(){
+
+    }
+
+    public int getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(int sessionId) {
+        this.sessionId = sessionId;
+    }
 
     public int getoId() {
         return oId;
@@ -50,11 +70,11 @@ public class message {
         this.status = status;
     }
 
-    public int getRecepterId() {
-        return recepterId;
+    public int getReceiverId() {
+        return receiverId;
     }
 
-    public void setRecepterId(int recepterId) {
-        this.recepterId = recepterId;
+    public void setReceiverId(int receiverId) {
+        this.receiverId = receiverId;
     }
 }

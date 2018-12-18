@@ -2,13 +2,23 @@ package com.example.Genius.model;
 
 import java.util.Date;
 
-public class userSubscription {
+public class UserSubscription {
+    /**
+     * @Description: 订阅规则 数据库中存在即为订阅，不存在即为不订阅
+     */
     private int oId;
     private int userId;
     private int targetType;
     private int action;
-    private Date createTime;
 
+    public UserSubscription(int userId, int targetType, int action) {
+        this.userId = userId;
+        this.targetType = targetType;
+        this.action = action;
+    }
+    public UserSubscription(){
+
+    }
     public int getoId() {
         return oId;
     }
@@ -41,11 +51,4 @@ public class userSubscription {
         this.action = action;
     }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }

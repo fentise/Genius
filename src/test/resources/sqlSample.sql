@@ -1,0 +1,23 @@
+--SELECT a.id,a.SName,a.ClsNo,a.Score
+--FROM aa a LEFT JOIN aa b ON a.ClsNo=b.ClsNo AND a.Score<b.Score
+--group by a.id,a.SName,a.ClsNo,a.Score
+--having count(b.id)<2
+--ORDER BY a.ClsNo,a.Score desc;
+--
+--select remider.*
+--from remider inner join user_notify on reminder.oId = user_notify.notifyId
+--where user_notify.userId = {userId} and user_notify.notifyType = ${TYPE_MESSAGE}
+--    and (select count(distinct (m.createTime) from message as m where m.sessionId = message.sessionId and m.createTime > message.createTime ) < {limit}
+--order by message.createTime desc
+--
+--
+--select d.Name as Department, e.Name as Employee, e.Salary as Salary
+--    from Employee as e inner join Department as d
+--    on e.DepartmentId = d.Id
+--    where (select count(distinct(e1.Salary)) from Employee as e1 where e1.DepartmentId = e.DepartmentId and e1.Salary > e.Salary) < 3
+--    order by e.Salary desc;
+--;
+--select m1.*
+--from forum.message as m1 inner join forum.user_notify on m1.oId = forum.user_notify.notifyId
+--where forum.user_notify.userId = 1 and forum.user_notify.notifyType = 2 and ( select count(distinct forum.m.oId) from forum.message as m where m.sessionId = m1.sessionId and m.createTime > m1.createTime ) < 50
+--order by sessionId

@@ -2,7 +2,7 @@ package com.example.Genius.model;
 
 import java.util.Date;
 
-public class reminder {
+public class Reminder {
     private int oId;
     private int senderId;
     private int targetId;
@@ -10,6 +10,17 @@ public class reminder {
     private int action;
     private Date createTime;
     private int status;
+
+    public Reminder(int senderId, int targetId, int targetType, int action, Date createTime) {
+        this.senderId = senderId;
+        this.targetId = targetId;
+        this.targetType = targetType;
+        this.action = action;
+        this.createTime = createTime;
+    }
+    public Reminder(){
+
+    }
 
     public int getoId() {
         return oId;

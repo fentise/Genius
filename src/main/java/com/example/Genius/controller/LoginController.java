@@ -1,8 +1,6 @@
 package com.example.Genius.controller;
 
-import com.example.Genius.Contants.Contants;
-import com.example.Genius.DAO.UserMapper;
-import com.example.Genius.model.User;
+import com.example.Genius.DAO.UserDAO;
 import com.example.Genius.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +23,7 @@ public class LoginController {
     @Autowired
     private UserService userService;
     @Autowired
-    private UserMapper userMapper;
+    private UserDAO userDAO;
 
     @RequestMapping(path={"/registerAndLogin"})
     public String registerAndLogin(Model model,

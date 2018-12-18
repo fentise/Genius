@@ -12,6 +12,12 @@ public class Announce {
     public Announce(){
 
     }
+
+    public Announce(String announceContent, Date createTime) {
+        this.announceContent = announceContent;
+        this.createTime = createTime;
+    }
+
     public int getoId() {
         return oId;
     }

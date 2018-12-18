@@ -22,11 +22,12 @@ public class User {
     public User(){
 
     }
-    public User(String userNickname,String userPassword,String userSalt,String userEmail,String userHomePageURL,int userRole,int userStatus){
+    public User(String userNickname,String userPassword,String userSalt,String userEmail,String userProfilePhoto,String userHomePageURL,int userRole,int userStatus){
         this.userNickname = userNickname;
         this.userPassword = userPassword;
         this.userSalt = userSalt;
         this.userEmail = userEmail;
+        this.userProfilePhoto = userProfilePhoto;
         this.userHomePageURL = userHomePageURL;
         this.userRole = userRole;
         this.userStatus = userStatus;

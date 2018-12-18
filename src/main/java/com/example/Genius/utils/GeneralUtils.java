@@ -4,6 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.security.MessageDigest;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,5 +60,12 @@ public class GeneralUtils {
 //        System.out.println(isEmailAddress("791427340@125qq.com"));
 //        System.out.println(isEmailAddress("791427340qq.com"));
 //        System.out.println(isEmailAddress("791427340@qqcom"));
+//    }
+//    public static Date parseFromString(String time){  // FIXME:这里返回值有问题，研究一下
+//        SimpleDateFormat formatter = new SimpleDateFormat();
+//        ParsePosition pos = new ParsePosition(0);
+//        Date newTime = formatter.parse(time,pos); //不带new的话实际上只是指向这个方法返回的对象的内存地址
+//        Date newTime2 = new Date();
+//        return newTime2;
 //    }
 }

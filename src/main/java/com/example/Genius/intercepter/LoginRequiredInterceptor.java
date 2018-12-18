@@ -1,7 +1,7 @@
 package com.example.Genius.intercepter;
 
-import com.example.Genius.DAO.LoginTicketMapper;
-import com.example.Genius.DAO.UserMapper;
+import com.example.Genius.DAO.LoginTicketDAO;
+import com.example.Genius.DAO.UserDAO;
 import com.example.Genius.model.HostHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +19,9 @@ public class LoginRequiredInterceptor implements HandlerInterceptor {
     @Autowired
     HostHolder hostHolder;
     @Autowired
-    UserMapper userMapper;
+    UserDAO userDAO;
     @Autowired
-    LoginTicketMapper loginTicketMapper;
+    LoginTicketDAO loginTicketDAO;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

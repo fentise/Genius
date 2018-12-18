@@ -2,7 +2,10 @@ package com.example.Genius.model;
 
 import java.util.Date;
 
-public class userNotify {
+public class UserNotify {
+    /**
+     * @Description: 用户消息列表，推和拉都将与用户有关的消息的id和类型放入这个列表
+     */
     private int oId;
     private int userId;
     private Date createTime;
@@ -10,6 +13,16 @@ public class userNotify {
     private int notifyId;
     private int notifyType;
 
+    public UserNotify(int userId,Date createTime,int hasRead,int notifyId,int notifyType){
+        this.userId = userId;
+        this.createTime = createTime;
+        this.hasRead = hasRead;
+        this.notifyId = notifyId;
+        this.notifyType = notifyType;
+    }
+    public UserNotify(){
+        //无参构造函数
+    }
     public int getoId() {
         return oId;
     }

@@ -1,9 +1,8 @@
 package com.example.Genius.intercepter;
 
 import com.example.Genius.Contants.Contants;
-import com.example.Genius.DAO.LoginTicketMapper;
-import com.example.Genius.DAO.UserMapper;
-import com.example.Genius.controller.LoginController;
+import com.example.Genius.DAO.LoginTicketDAO;
+import com.example.Genius.DAO.UserDAO;
 import com.example.Genius.model.HostHolder;
 import com.example.Genius.model.LoginTicket;
 import com.example.Genius.model.User;
@@ -25,9 +24,9 @@ public class PassportInterceptor implements HandlerInterceptor {
     @Autowired
     HostHolder hostHolder;
     @Autowired
-    UserMapper userMapper;
+    UserDAO userDAO;
     @Autowired
-    LoginTicketMapper loginTicketMapper;
+    LoginTicketDAO loginTicketDAO;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -41,13 +40,13 @@ public class PassportInterceptor implements HandlerInterceptor {
             }
         }
         if(ticket != null){
-            LoginTicket loginTicket = loginTicketMapper.selectByTicket(ticket);
+            LoginTicket loginTicket = loginTicketDAO.selectByTicket(ticket);
             if(loginTicket == null || loginTicket.getExpired().before(new Date()) || loginTicket.getStatus() != Contants.loginTicket.LOGIN_STATUS ){
                 logger.error("login check fail return false");
                 return true;
             }
 
-            User user = userMapper.selectByUserId(loginTicket.getUserId());
+            User user = userDAO.selectByUserId(loginTicket.getUserId());
 
             hostHolder.setCurrentUsers(user);            //将当前登陆用户添加到上下文
 
