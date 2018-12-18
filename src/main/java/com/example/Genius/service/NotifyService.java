@@ -33,7 +33,6 @@ public class NotifyService {
     public  void createNotify(Reminder reminder){
         reminderDAO.add(reminder);
     }
-
     /**
      * @Description:  消息发送者手动创建message类型消息，将自动推送到接收方的用户消息队列中
      * @param: message

@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class LoginRequiredInterceptor implements HandlerInterceptor {
+    /**
+     * 在PassportInterceptor之后执行的拦截器，检查当前用户的一些权限信息
+     * */
     private static final Logger logger = LoggerFactory.getLogger(LoginRequiredInterceptor.class);
     @Autowired
     HostHolder hostHolder;
@@ -25,8 +28,10 @@ public class LoginRequiredInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-       if(hostHolder.getCurrentUser() == null)
-           response.sendRedirect("/registerAndLogin?next=" + request.getRequestURI());
+       if(hostHolder.getCurrentUser() == null){
+           response.sendRedirect("/registerAndLogin");
+           return false;
+       }
        return true;
     }
 

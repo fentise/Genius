@@ -1,4 +1,4 @@
-package com.example.Genius.model;
+package drop;
 
 import java.util.HashMap;
 import java.util.Map;

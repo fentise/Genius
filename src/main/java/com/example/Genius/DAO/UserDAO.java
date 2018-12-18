@@ -19,6 +19,9 @@ public interface UserDAO {
     @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="oId")
     int add(User user);
 
+    @Select("select * from user where oId = #{userId}")
+    User queryUser(@Param("userId") int userId);
+
     @Select({"select * from user where userEmail = #{userEmail}"})
     @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="oId")
     User selectByUserEmail(@Param("userEmail") String userEmail );

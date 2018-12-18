@@ -20,6 +20,9 @@ import java.util.Date;
 
 @Component
 public class PassportInterceptor implements HandlerInterceptor {
+    /**
+     * 检查当前请求的用户是谁，并缓存在hostholder中，提供给后续的interceptor使用
+     * */
     private static final Logger logger = LoggerFactory.getLogger(PassportInterceptor.class);
     @Autowired
     HostHolder hostHolder;
@@ -42,27 +45,21 @@ public class PassportInterceptor implements HandlerInterceptor {
         if(ticket != null){
             LoginTicket loginTicket = loginTicketDAO.selectByTicket(ticket);
             if(loginTicket == null || loginTicket.getExpired().before(new Date()) || loginTicket.getStatus() != Contants.loginTicket.LOGIN_STATUS ){
-                logger.error("login check fail return false");
-                return true;
+                return false;
             }
-
             User user = userDAO.selectByUserId(loginTicket.getUserId());
-
             hostHolder.setCurrentUsers(user);            //将当前登陆用户添加到上下文
-
-        //    logger.error("login check successful and userId =" + user.getoId());
-
             return true;
         }
-        logger.info("check fail cookies中没有ticket字段");
-        return true;
+        return false;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        if(modelAndView != null && hostHolder.getCurrentUser() != null)
-            modelAndView.addObject("user", hostHolder.getCurrentUser());
-            //FIXME：登录页面跳转时这里会报空指针异常
+//        if(modelAndView != null && hostHolder.getCurrentUser() != null)
+//            modelAndView.addObject("user", hostHolder.getCurrentUser());
+//            //FIXME：登录页面跳转时这里会报空指针异常
+            // TODO:可选择在这里返回用户id
     }
 
     @Override

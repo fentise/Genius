@@ -23,18 +23,13 @@ public class UserService {
     @Autowired
     private LoginTicketDAO loginTicketDAO;
 
-    private String getUserHomePageURL(){
-        return String.format("/profile/%d",new Random().nextInt(10000));
-    }
-
     /**
     * @param
-    * @return map<String,Object>当注册成功是带有键为“loginTicket"的键值对，不然则没有
+    * @return map<String,Object>当注册成功是带有键为“loginTicket"的键值对，不然则返回键为“msg”的键值对
     * */
-    public Map<String,Object> register(String userNickname, String userEmail, String password){
+    public Map<String,Object> register(String userNickname, String userEmail, String password,Boolean rememberMe){
         Map<String,Object> map = new HashMap<String,Object>();
         try{
-
             if(StringUtils.isEmpty(userEmail)){
                 map.put("msg","登录邮箱不能为空");
                 return map;
@@ -55,16 +50,12 @@ public class UserService {
                 map.put("msg","用户名不能为空");
                 return map;
             }
-            //logger.error("nickName="+userNickname);
             User user = new User();
             user.setUserNickname(userNickname);
             user.setUserEmail(userEmail);
-            user.setUserHomePageURL(getUserHomePageURL());
-
             //均默认为0
             user.setUserRole(0);
             user.setUserStatus(0);
-
             String userProfilePhoto = String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000));
             //String userProfilePhoto = String.format("h%d", new Random().nextInt(1000));
             user.setUserProfilePhoto(userProfilePhoto);
@@ -72,11 +63,7 @@ public class UserService {
             user.setUserSalt(UUID.randomUUID().toString().substring(0, 5));
             user.setUserPassword(GeneralUtils.MD5(password+user.getUserSalt()));
             userDAO.add(user);
-            //return this.userDAO.add(user);
-
-         //   User user1 = userDAO.selectByUserEmail(userEmail);
-
-            String loginTicket = addLoginTicket(userDAO.selectByUserEmail(userEmail).getoId(),false);
+            String loginTicket = addLoginTicket(userDAO.selectByUserEmail(userEmail).getoId(),rememberMe);
             map.put(Contants.cookies.LOGIN_TICKET_NAME,loginTicket);
             return map;
             }
@@ -86,6 +73,7 @@ public class UserService {
             return map;
         }
     }
+
 
     public Map<String,Object> login(String userEmail,String password,boolean rememberMe){
         Map<String,Object> map = new HashMap<String,Object>();
@@ -120,7 +108,13 @@ public class UserService {
         return map;
     }
 
-    private String addLoginTicket(int userId,boolean rememberMe){
+    /**
+     * @Description: 新增loginTicket
+     * @param: userId
+     * @param: rememberMe 是否记住我，记住的话有更长的过期时间
+ * @return: java.lang.String
+     */
+    private String addLoginTicket(int userId,boolean rememberMe){ // TODO：应先检查当前用户是否已有login状态的loginTicket，存在的话更新其过期时间，不存在的话下发新的。不然的话旧的loginTicket仍旧起效
         LoginTicket loginTicket = new LoginTicket();
         loginTicket.setUserId(userId);
         Date date = new Date();
@@ -137,12 +131,13 @@ public class UserService {
         return loginTicket.getTicket();
     }
 
+    /**
+     * @Description: 登出，将loginTicker的状态设为登出状态
+     * @param: loginTicket
+ * @return: boolean
+     */
     public boolean logout(String loginTicket){
         loginTicketDAO.updateStatus(loginTicket,Contants.loginTicket.LOGOUT_STATUS);
         return true;
-    }
-
-    public User getUserById(int id) {
-        return userDAO.selectByUserId(id);
     }
 }

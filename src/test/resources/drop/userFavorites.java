@@ -1,4 +1,4 @@
-package com.example.Genius.model;
+package drop;
 
 public class userFavorites {
     private int oId;

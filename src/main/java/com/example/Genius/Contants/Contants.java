@@ -8,22 +8,18 @@ import java.util.HashMap;
  *  - 同一类的常量应新建一个静态内部类，并将常量定义在其中
  *  - 代表常量的变量名应该全大写
  * */
-
-
 public class Contants {
     /**
      * */
     private Contants(){}//私有化构造函数
     public static class cookies{
         public static final String LOGIN_TICKET_NAME = "LoginTicket";// cookies中存有用户登录token的字段名称
-
     }
 
     public static class loginTicket{
         public static final int LOGIN_STATUS  = 1;//loginTicket表中status字段为1时代表该用户已登录
         public static final int LOGOUT_STATUS = 0;//loginTicket表中status字段为0时代表该用户已下线
     }
-
     public static class userNotify{
         public static final int TYPE_ANNOUNCE = 0;
         public static final int TYPE_REMINDER = 1;
@@ -59,10 +55,7 @@ public class Contants {
                 put(8,"我关注的帖子有新回帖");
             }
         };
-
-
     }
-
     public static class announce{
         //public static final int STATUS_
     }

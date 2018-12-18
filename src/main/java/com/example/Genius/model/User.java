@@ -6,10 +6,9 @@ public class User {
     private String userPassword;
     private String userSalt;
     private String userEmail;
-    private String userProfilePhoto;
-    private String userHomePageURL;
     private int userRole;
     private int userStatus;
+    private String userProfilePhoto;
 
     public String getUserProfilePhoto() {
         return userProfilePhoto;
@@ -22,13 +21,12 @@ public class User {
     public User(){
 
     }
-    public User(String userNickname,String userPassword,String userSalt,String userEmail,String userProfilePhoto,String userHomePageURL,int userRole,int userStatus){
+    public User(String userNickname,String userPassword,String userSalt,String userEmail,String userProfilePhoto,int userRole,int userStatus){
         this.userNickname = userNickname;
         this.userPassword = userPassword;
         this.userSalt = userSalt;
         this.userEmail = userEmail;
         this.userProfilePhoto = userProfilePhoto;
-        this.userHomePageURL = userHomePageURL;
         this.userRole = userRole;
         this.userStatus = userStatus;
     }
@@ -73,13 +71,6 @@ public class User {
         this.userEmail = userEmail;
     }
 
-    public String getUserHomePageURL() {
-        return userHomePageURL;
-    }
-
-    public void setUserHomePageURL(String userHomePageURL) {
-        this.userHomePageURL = userHomePageURL;
-    }
 
     public int getUserRole() {
         return userRole;

@@ -1,4 +1,4 @@
-package com.example.Genius.model;
+package drop;
 
 public class Tags {
     private int oId;

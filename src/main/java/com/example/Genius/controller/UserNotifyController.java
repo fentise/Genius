@@ -113,7 +113,7 @@ public class UserNotifyController {
      * @param: userId
      * @param: time
      * @param: limit
- * @return: java.lang.String
+     * @return: java.lang.String
      */
     @RequestMapping(value="userNotify/getReminder/{userId}/{time}/{limit}")
     public String getMoreReminder(@PathVariable("userId")int userId, @PathVariable("time")Date time,@PathVariable("limit") int limit){
