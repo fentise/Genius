@@ -26,7 +26,7 @@ public class LoginRequiredInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
        if(hostHolder.getCurrentUser() == null)
-           response.sendRedirect("/registerAndLogin?next=" + request.getRequestURI());
+           response.sendRedirect("/registerAndLogin?next=" + request.getRequestURI());    // 检测到用户为登录就跳转到登录页面
        return true;
     }
 

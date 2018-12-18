@@ -40,7 +40,7 @@ public class testController {
             mapList.add(map);
         }
 
-        List<Article> articleList = articleService.selectLatestArticles(0,0,10);
+        List<Article> articleList = articleService.selectLatestArticles(0,0,0,10);
 
         System.out.print(articleList);
 
@@ -61,6 +61,6 @@ public class testController {
 
     @RequestMapping("/testHeader")
     String testHeader(){
-        return "header_test";
+        return "header_test2";
     }
 }

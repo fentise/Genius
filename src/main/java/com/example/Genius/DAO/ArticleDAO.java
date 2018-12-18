@@ -1,9 +1,7 @@
 package com.example.Genius.DAO;
 
 import com.example.Genius.model.Article;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -21,8 +19,12 @@ public interface ArticleDAO {
             "#{articleStatus}, #{createTime}, #{latestUpdateTime})"})
     int addArticle(Article article);
 
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where oId=#{id}"})
+    Article getArticleById(int id);
 
-    List<Article> selectLatestArticles(@Param("articleAuthorId") int articleAuthorId,
+    List<Article> selectLatestArticles(@Param("articleAuthorId") int articleAuthorId,@Param("themeId") int themeId,
                                        @Param("offset") int offset, @Param("limit") int limit);
 
+    @Update({"update ", TABLE_NAME, " set articleReplyCount=#{articleReplyCount} where oId=#{id}"})
+    void updateCommentCount(@Param("id") int id, @Param("articleReplyCount") int articleReplyCount);
 }

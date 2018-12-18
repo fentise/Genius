@@ -21,7 +21,7 @@ public class GeniusWebConfiguration extends WebMvcConfigurerAdapter {
 
         registry.addInterceptor(passportInterceptor);          //此处特别注意拦截器优先级
 
-        registry.addInterceptor(loginRequiredInterceptor).addPathPatterns("/user/*");
+        registry.addInterceptor(loginRequiredInterceptor).addPathPatterns("/user/*");        // 设置拦截路径
 
         super.addInterceptors(registry);
     }

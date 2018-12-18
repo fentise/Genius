@@ -116,7 +116,7 @@ public class UserService {
          * 表明用户成功登陆，就像用户下发ticket
          */
         String loginTicket = addLoginTicket(user.getoId(),rememberMe);
-        map.put(Contants.cookies.LOGIN_TICKET_NAME,loginTicket);
+        map.put(Contants.cookies.LOGIN_TICKET_NAME,loginTicket);          // 下发ticket
         return map;
     }
 
