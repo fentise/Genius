@@ -152,7 +152,7 @@ public class NotifyService {
             }
         }
         for(Reminder reminder:reminders){
-            userNotifyDAO.add(new UserNotify(userId,reminder.getCreateTime(),Contants.userNotify.UNREAD,reminder.getoId(),reminder.getTargetType()));
+            userNotifyDAO.add(new UserNotify(userId,reminder.getCreateTime(),Contants.userNotify.UNREAD,reminder.getoId(),Contants.userNotify.TYPE_REMINDER));
         }
     }
 
@@ -168,7 +168,7 @@ public class NotifyService {
         }
         //对于公告暂无过滤规则，直接插入userNotify中
         for(Announce announce:announces){
-            userNotifyDAO.add(new UserNotify(userId,announce.getCreateTime(),Contants.userNotify.UNREAD,announce.getoId(),announce.getTargetType()));
+            userNotifyDAO.add(new UserNotify(userId,announce.getCreateTime(),Contants.userNotify.UNREAD,announce.getoId(),Contants.userNotify.TYPE_ANNOUNCE));
         }
     }
 
@@ -292,6 +292,22 @@ public class NotifyService {
         }
         return true;
     }
+//    private String getReminderContent(Reminder reminder){
+//        String time = null;
+//        String target = null;
+//        String action = null;
+//        String contentPattern = "用户在 %s %s 你的 %s ";
+//        if(reminder.getTargetType() == Contants.reminder.TARGET_TYPE_ARTICLE){
+//            if(reminder.getAction() == Contants.reminder.ACTION_LIKE)
+//                action = "评论了";
+//            else if(reminder.getAction() == Contants.reminder.ACTION_LIKE)
+//                action = "赞同了";
+//        }else if(reminder.getTargetType() == Contants.reminder.TARGET_TYPE_COMMENT){
+//
+//        }else if(reminder.getTargetType() == Contants.reminder.TARGET_TYPE_REPLY){
+//
+//        }
+//    }
 
 
 }

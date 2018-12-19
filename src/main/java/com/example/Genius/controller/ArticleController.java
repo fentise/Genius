@@ -55,7 +55,6 @@ public class ArticleController {
             article.setLatestUpdateTime(new Date());
             article.setCreateTime(new Date());
             article.setArticleViewCount(0);
-            article.setArticleURL("");
             article.setArticleTopicId(theme);
             article.setArticleReplyCount(0);
             article.setArticleLikeCount(0);

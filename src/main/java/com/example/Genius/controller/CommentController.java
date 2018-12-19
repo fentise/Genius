@@ -1,12 +1,11 @@
 package com.example.Genius.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.Genius.model.Article;
-import com.example.Genius.model.Comment;
-import com.example.Genius.model.EntityType;
-import com.example.Genius.model.HostHolder;
+import com.example.Genius.Contants.Contants;
+import com.example.Genius.model.*;
 import com.example.Genius.service.ArticleService;
 import com.example.Genius.service.CommentService;
+import com.example.Genius.service.NotifyService;
 import com.example.Genius.utils.GeneralUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +26,9 @@ public class CommentController {
 
     @Autowired
     ArticleService articleService;
+
+    @Autowired
+    private NotifyService notifyService;
 
     private static final Logger logger = LoggerFactory.getLogger(CommentController.class);
 
@@ -57,9 +59,12 @@ public class CommentController {
             comment.setEntityId(articleId);
 
             commentService.addComment(comment);
-
             int count = commentService.getCommentCount(articleId,EntityType.ENTITY_ARTICLE); // 添加评论后，同步更新评论数目
             articleService.updateArticleCommentCount(comment.getEntityId(),count);
+
+            // 用户评论时，生成对帖子发布者的提醒
+            Reminder reminder = new Reminder(hostHolder.getCurrentUser().getoId(),comment.getEntityId(), Contants.reminder.TARGET_TYPE_ARTICLE,Contants.reminder.ACTION_COMMENT,comment.getCreateTime());
+            notifyService.createNotify(reminder);
 
         }catch (Exception e) {
             logger.error("增加评论失败" + e.getMessage());

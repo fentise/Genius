@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 public interface UserDAO {
 
     String TABLE_NAME = " user ";
-    String INSERT_FIELDS = " userNickname, userPassword, userSalt, userEmail, userHomePageURL, userRole, userStatus, userProfilePhoto";
+    String INSERT_FIELDS = " userNickname, userPassword, userSalt, userEmail, userRole, userStatus, userProfilePhoto";
     String SELECT_FIELDS  = " oId, " + INSERT_FIELDS;
 
  /*   @Insert("insert into user(userNickname,userPassword,userSalt,userEmail,userHomePageURL,userRole,userStatus,userProfilePhoto)" +
             "value(#{userNickname},#{userPassword},#{userSalt},#{userEmail},#{userHomePageURL},#{userRole},#{userStatus},#{userProfilePhoto})")          */
 
     @Insert({"insert into ", TABLE_NAME, "(", INSERT_FIELDS ,
-            ") value(#{userNickname},#{userPassword},#{userSalt},#{userEmail},#{userHomePageURL},#{userRole},#{userStatus},#{userProfilePhoto})"})
+            ") value(#{userNickname},#{userPassword},#{userSalt},#{userEmail},#{userRole},#{userStatus},#{userProfilePhoto})"})
     @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="oId")
     int add(User user);
 

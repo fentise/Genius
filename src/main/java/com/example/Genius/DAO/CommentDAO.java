@@ -12,17 +12,18 @@ public interface CommentDAO {
 
     String TABLE_NAME = " comment ";
     String INSERT_FIELDS = " userId, entityId, entityType, content, status, " +
-            "createTime, likeCount, commentFloor ";
+            "createTime, likeCount, commentReplyCount ";
 
     String SELECT_FIELDS = " oId," + INSERT_FIELDS;
 
     @Insert({"insert into ",TABLE_NAME, "(", INSERT_FIELDS,
-            ") values (#{userId},#{entityId},#{entityType},#{content},#{status},#{createTime},#{likeCount}," +
-                    "#{commentFloor})"})
+            ") values (#{userId},#{entityId},#{entityType},#{content},#{status},#{createTime},#{likeCount},#{commentReplyCount})"})
+    @Options(useGeneratedKeys = true,keyColumn = "oId",keyProperty = "oId")
     int addComment(Comment comment);
 
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME,
             " where entityId=#{entityId} and entityType=#{entityType} order by oId desc"})
+    @Options(useGeneratedKeys = true,keyColumn = "oId",keyProperty = "oId")
     List<Comment> selectByEntity(@Param("entityId") int entityId,@Param("entityType") int entityType);
 
     @Update({"update ",TABLE_NAME," set status=#{status} where entityId=#{entityId} and entityType=#{entityType}"})

@@ -26,6 +26,14 @@ public interface ReminderDAO {
 //    @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="oId")
 //    List<Reminder> queryReminderListAfterTime(@Param("time")Date time,@Param("limit") int limit);
 
+    /**----------------------article------------------------------------*/
+    @Select("select article_reminder.*  " +
+            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_ARTICLE+"}) as article_reminder inner join (select * from article where articleAuthorId = #{userId}) as user_article " +
+            "on article_reminder.targetId = user_article.oId " +
+            "order by article_reminder.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格
+            "limit #{limit}")
+    @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="article_reminder.oId")
+    List<Reminder> queryRemindersRelateToArticle(@Param("userId") int userId,@Param("limit") int limit);
 
     @Select("select article_reminder.*  " +
             "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_ARTICLE+"}) as article_reminder inner join (select * from article where articleAuthorId = #{userId}) as user_article" +
@@ -33,41 +41,43 @@ public interface ReminderDAO {
             "where article_reminder.createTime > #{time} "+
             "order by article_reminder.createTime desc" +
             "limit #{limit}")
+    @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="article_reminder.oId")
     List<Reminder> queryRemindersRelateToArticleAfterTime(@Param("userId") int userId,@Param("time") Date time,@Param("limit") int limit);
 
-    @Select("select article_reminder.*  " +
-            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_ARTICLE+"}) as article_reminder inner join (select * from article where articleAuthorId = #{userId}) as user_article " +
-            "on article_reminder.targetId = user_article.oId " +
-            "order by article_reminder.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格
-            "limit #{limit}")
-    List<Reminder> queryRemindersRelateToArticle(@Param("userId") int userId,@Param("limit") int limit);
 
-    @Select("select article_reminder.*  " +
-            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_REPLY+"}) as article_reminder inner join (select * from reply where replyAuthorId = #{userId}) as user_reply " +
-            "on article_reminder.targetId = user_reply.oId " +
+    /**--------------------------------reply-------------------*/
+    @Select("select reply_reminder.*  " +
+            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_REPLY+"}) as reply_reminder inner join (select * from reply where userId = #{userId}) as user_reply " +
+            "on reply_reminder.targetId = user_reply.oId " +
             "order by user_reply.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格
             "limit #{limit}")
+    @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="reply_reminder.oId")
     List<Reminder> queryRemindersRelateToReply(@Param("userId") int userId,@Param("limit") int limit);
 
-    @Select("select article_reminder.*  " +
-            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_REPLY+"}) as article_reminder inner join (select * from reply where replyAuthorId = #{userId}) as user_reply " +
-            "on article_reminder.targetId = user_reply.oId " +
+    @Select("select reply_reminder.*  " +
+            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_REPLY+"}) as reply_reminder inner join (select * from reply where userId = #{userId}) as user_reply " +
+            "on reply_reminder.targetId = user_reply.oId " +
             "where user_reply.createTime > #{time} "+
             "order by user_reply.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格
             "limit #{limit}")
+    @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="reply_reminder.oId")
     List<Reminder> queryRemindersRelateToReplyAfterTime(@Param("userId") int userId,@Param("time") Date time,@Param("limit") int limit);
-    @Select("select article_reminder.*  " +
-            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_COMMENT+"}) as article_reminder inner join (select * from article where articleAuthorId = #{userId}) as user_article " +
-            "on article_reminder.targetId = user_article.oId " +
-            "order by article_reminder.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格
+
+    /**------------------------------------------------comment-----------------------------------*/
+    @Select("select comment_reminder.*  " +
+            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_COMMENT+"}) as comment_reminder inner join (select * from comment where userId = #{userId}) as user_comment " +
+            "on comment_reminder.targetId = user_comment.oId " +
+            "order by comment_reminder.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格
             "limit #{limit}")
+    @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="comment_reminder.oId")
     List<Reminder> queryRemindersRelateToComment(@Param("userId") int userId,@Param("limit") int limit);
-    @Select("select article_reminder.*  " +
-            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_COMMENT+"}) as article_reminder inner join (select * from reply where replyAuthorId = #{userId}) as user_reply " +
-            "on article_reminder.targetId = user_reply.oId " +
-            "where user_reply.createTime > #{time} "+
-            "order by user_reply.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格
+    @Select("select comment_reminder.*  " +
+            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_COMMENT+"}) as comment_reminder inner join (select * from comment where userId = #{userId}) as user_comment " +
+            "on comment_reminder.targetId = user_comment.oId " +
+            "where user_comment.createTime > #{time} "+
+            "order by user_comment.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格
             "limit #{limit}")
+    @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="comment_reminder.oId")
     List<Reminder> queryRemindersRelateToCommentAfterTime(@Param("userId") int userId,@Param("time") Date time,@Param("limit") int limit);
 
 

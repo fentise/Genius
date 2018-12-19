@@ -76,6 +76,7 @@ public class UserNotifyController {
         HashMap<Integer,Message> messageHashMap = new HashMap<>();
         HashMap<Integer,Integer> readStatusMap = new HashMap<>();
         notifyService.getNotifyAfterTime(userId,time,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
+
         HashMap<String,Object> result = new HashMap<>();
         result.put("announces",announceHashMap);
         result.put("reminders",reminderHashMap);
@@ -245,7 +246,4 @@ public class UserNotifyController {
         }
         return "success";
     }
-
-
-
 }

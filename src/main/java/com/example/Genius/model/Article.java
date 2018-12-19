@@ -7,7 +7,6 @@ public class Article {
     private String articleTitle;
     private int articleAuthorId;
     private String articleContent;
-    private String articleURL;
     private int articleReplyCount;
     private int articleLikeCount;
     private int articleViewCount;
@@ -46,13 +45,6 @@ public class Article {
         this.articleContent = articleContent;
     }
 
-    public String getArticleURL() {
-        return articleURL;
-    }
-
-    public void setArticleURL(String articleURL) {
-        this.articleURL = articleURL;
-    }
 
     public int getArticleReplyCount() {
         return articleReplyCount;

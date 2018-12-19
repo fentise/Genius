@@ -37,6 +37,7 @@ public class LoginController {
                            @RequestParam(value="password") String password,
                            @RequestParam(value = "rememberMe",defaultValue = "false") Boolean rememberMe,
                            HttpServletResponse response){
+        // TODO:注册时默认订阅所有的规则
         Map<String,Object> map = userService.register(userNickname,userEmail,password,rememberMe);           //调用userService接口进行注册
         if(map.containsKey(LOGIN_TICKET_NAME))          //表明注册成功
         {
@@ -56,7 +57,6 @@ public class LoginController {
                         @RequestParam(value = "password") String password,
                         @RequestParam(value="rememberMe",defaultValue = "false") Boolean rememberMe,
                         HttpServletResponse response) {
-
         try{
             Map<String,Object> map = userService.login(userEmail,password,rememberMe);
             if(map.containsKey(LOGIN_TICKET_NAME)) {

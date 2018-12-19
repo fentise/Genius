@@ -9,18 +9,21 @@ import java.util.List;
 public interface ArticleDAO {
 
     String TABLE_NAME = " article ";
-    String INSERT_FIELDS = " articleTitle, articleAuthorId, articleContent, articleURL, articleReplyCount, " +
+    String INSERT_FIELDS = " articleTitle, articleAuthorId, articleContent, articleReplyCount, " +
             "articleLikeCount, articleViewCount, articleTopicId, articleStatus, createTime, latestUpdateTime ";
 
     String SELECT_FIELDS = " oId," + INSERT_FIELDS;
 
     @Insert({"insert into ",TABLE_NAME, "(", INSERT_FIELDS, ") values(#{articleTitle}, #{articleAuthorId}, #{articleContent}, " +
-            "#{articleURL}, #{articleReplyCount}, #{articleLikeCount}, #{articleViewCount}, #{articleTopicId}, " +
+            "#{articleReplyCount}, #{articleLikeCount}, #{articleViewCount}, #{articleTopicId}, " +
             "#{articleStatus}, #{createTime}, #{latestUpdateTime})"})
+    @Options(useGeneratedKeys = true,keyColumn = "oId",keyProperty = "oId")
     int addArticle(Article article);
 
     @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where oId=#{id}"})
+    @Options(useGeneratedKeys = true,keyColumn = "oId",keyProperty = "oId")
     Article getArticleById(int id);
+
 
     List<Article> selectLatestArticles(@Param("articleAuthorId") int articleAuthorId,@Param("themeId") int themeId,
                                        @Param("offset") int offset, @Param("limit") int limit);

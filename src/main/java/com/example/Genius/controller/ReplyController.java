@@ -35,7 +35,8 @@ public class ReplyController {
 
     @Autowired
     LikeService likeService;
-
+    @Autowired
+    private NotifyService notifyService;
     private static final Logger logger = LoggerFactory.getLogger(ReplyController.class);
 
     /**
@@ -74,6 +75,10 @@ public class ReplyController {
 
             int count = replyService.getReplyCount(commentId); // 添加回复后，同步更新评论回复数目
             commentService.updateCommentReplyCount(commentId,count);
+
+            // 新增回复的同时，增加对评论发布者的提醒
+            Reminder reminder = new Reminder(hostHolder.getCurrentUser().getoId(),reply.getCommentId(),Contants.reminder.TARGET_TYPE_COMMENT,Contants.reminder.ACTION_REPLY,reply.getCreateTime());
+            notifyService.createNotify(reminder);
 
         }catch (Exception e) {
             logger.error("增加回复失败" + e.getMessage());
