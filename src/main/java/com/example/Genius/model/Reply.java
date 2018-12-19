@@ -4,12 +4,11 @@ import java.util.Date;
 
 public class Reply {
     private int oId;
-    private int replyToId;
-    private int replyFloor;
-    private int replyAuthorId;
+    private int userId;
+    private int targetId;
     private String replyContent;
     private int likeCount;
-    private int commentCount;
+    private int commentId;
     private Date createTime;
     private int status;
 
@@ -21,28 +20,20 @@ public class Reply {
         this.oId = oId;
     }
 
-    public int getReplyToId() {
-        return replyToId;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setReplyToId(int replyToId) {
-        this.replyToId = replyToId;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public int getReplyFloor() {
-        return replyFloor;
+    public int getTargetId() {
+        return targetId;
     }
 
-    public void setReplyFloor(int replyFloor) {
-        this.replyFloor = replyFloor;
-    }
-
-    public int getReplyAuthorId() {
-        return replyAuthorId;
-    }
-
-    public void setReplyAuthorId(int replyAuthorId) {
-        this.replyAuthorId = replyAuthorId;
+    public void setTargetId(int targetId) {
+        this.targetId = targetId;
     }
 
     public String getReplyContent() {
@@ -61,12 +52,12 @@ public class Reply {
         this.likeCount = likeCount;
     }
 
-    public int getCommentCount() {
-        return commentCount;
+    public int getCommentId() {
+        return commentId;
     }
 
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
     }
 
     public Date getCreateTime() {

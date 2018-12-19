@@ -2,25 +2,21 @@ package com.example.Genius.model;
 
 import java.util.Date;
 
-public class Comment {
+public class UserLike {
     private int oId;
     private int userId;
     private int entityId;
     private int entityType;
-    private String content;
-    private int status;
     private Date createTime;
-    private int commentReplyCount;
+    private int status;
 
-    public int getCommentReplyCount() {
-        return commentReplyCount;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCommentReplyCount(int commentReplyCount) {
-        this.commentReplyCount = commentReplyCount;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
-
-    private int likeCount;
 
     public int getoId() {
         return oId;
@@ -54,13 +50,6 @@ public class Comment {
         this.entityType = entityType;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 
     public int getStatus() {
         return status;
@@ -68,21 +57,5 @@ public class Comment {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
     }
 }

@@ -14,7 +14,12 @@
         <if test="articleAuthorId != 0">
             WHERE articleAuthorId = #{articleAuthorId}
         </if>
+
+        <if test="themeId != 0">
+            WHERE articleTopicId = #{themeId}
+        </if>
         ORDER BY oId DESC
         LIMIT #{offset},#{limit}
     </select>
+
 </mapper>

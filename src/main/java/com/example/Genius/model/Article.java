@@ -11,14 +11,12 @@ public class Article {
     private int articleReplyCount;
     private int articleLikeCount;
     private int articleViewCount;
-    private int articleTopicId;
+    private int articleTopicId;              // 对应的主题分区
     private int articleStatus;
     private Date createTime;
     private Date latestUpdateTime;
 
-    public int getoId() {
-        return oId;
-    }
+    public int getoId() { return oId; }
 
     public void setoId(int oId) {
         this.oId = oId;
