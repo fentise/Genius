@@ -11,8 +11,6 @@ import com.example.Genius.service.CommentService;
 import com.example.Genius.service.LikeService;
 import com.example.Genius.service.UserService;
 import com.example.Genius.utils.GeneralUtils;
-import com.example.Genius.utils.JedisAdapter;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

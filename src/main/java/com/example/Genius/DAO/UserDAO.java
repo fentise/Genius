@@ -30,4 +30,5 @@ public interface UserDAO {
     @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="oId")
     User selectByUserId(@Param("userId") int userId);
 
+
 }

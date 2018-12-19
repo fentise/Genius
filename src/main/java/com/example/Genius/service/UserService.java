@@ -140,4 +140,8 @@ public class UserService {
         loginTicketDAO.updateStatus(loginTicket,Contants.loginTicket.LOGOUT_STATUS);
         return true;
     }
+
+    public User getUserById(int id) {
+        return userDAO.selectByUserId(id);
+    }
 }

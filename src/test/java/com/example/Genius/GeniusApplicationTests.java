@@ -3,7 +3,7 @@ package com.example.Genius;
 import com.example.Genius.DAO.ArticleDAO;
 import com.example.Genius.DAO.LikeDAO;
 import com.example.Genius.DAO.ReplyDAO;
-import com.example.Genius.DAO.UserMapper;
+import com.example.Genius.DAO.UserDAO;
 import com.example.Genius.model.UserLike;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,7 @@ import java.util.Date;
 public class GeniusApplicationTests {
 
 	@Autowired
-	UserMapper userMapper;
+	UserDAO userDAO;
 
 	@Autowired
 	ArticleDAO articleDAO;
