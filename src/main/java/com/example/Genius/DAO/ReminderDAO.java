@@ -56,8 +56,23 @@ public interface ReminderDAO {
             "order by user_reply.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格
             "limit #{limit}")
     List<Reminder> queryRemindersRelateToReplyAfterTime(@Param("userId") int userId,@Param("time") Date time,@Param("limit") int limit);
+    @Select("select article_reminder.*  " +
+            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_COMMENT+"}) as article_reminder inner join (select * from article where articleAuthorId = #{userId}) as user_article " +
+            "on article_reminder.targetId = user_article.oId " +
+            "order by article_reminder.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格
+            "limit #{limit}")
+    List<Reminder> queryRemindersRelateToComment(@Param("userId") int userId,@Param("limit") int limit);
+    @Select("select article_reminder.*  " +
+            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_COMMENT+"}) as article_reminder inner join (select * from reply where replyAuthorId = #{userId}) as user_reply " +
+            "on article_reminder.targetId = user_reply.oId " +
+            "where user_reply.createTime > #{time} "+
+            "order by user_reply.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格
+            "limit #{limit}")
+    List<Reminder> queryRemindersRelateToCommentAfterTime(@Param("userId") int userId,@Param("time") Date time,@Param("limit") int limit);
 
-//    @Select("select article_reminder.*  " +
+
+
+    //    @Select("select article_reminder.*  " +
 //            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_COMMENT+"}) as article_reminder inner join (select * from article where articleAuthorId = #{userId}) as user_article " +
 //            "on article_reminder.targetId = user_article.oId " +
 //            "order by article_reminder.createTime desc " +  //分为多行写的sql语句，拼接时记得加空格，不然粘在一起时无法识别关键字的，删除换行符之后也要记得加空格

@@ -65,15 +65,16 @@ public class Contants {
         public static final int UNSUBSCRIBE = 0;
         public static final HashMap<Integer,String> ROLES = new HashMap<Integer, String>(){
             {
-                put(0,"我发布的帖子被回帖");
-                put(1,"我发布的帖子被评论");
-                put(2,"我发布的帖子被点赞");
-                put(3,"我发布的回帖被回帖");
-                put(4,"我发布的回帖被评论");
-                put(5,"我发布的回帖被点赞");
-                put(6,"我发布的评论被点赞");
-                put(7,"我被关注");
-                put(8,"我关注的帖子有新回帖");
+                put(0,"我发布的帖子被评论");
+                put(1,"我发布的帖子被点赞");
+
+                put(2,"我发布的评论被回复");
+                put(3,"我发布的评论被点赞");
+
+                put(4,"我发布的回复被点赞");
+
+                put(5,"我被关注");
+                put(6,"我关注的帖子有新评论");
             }
         };
     }

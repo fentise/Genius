@@ -27,6 +27,7 @@ public class NotifyService {
 
     @Autowired
     private SessionDAO sessionDAO;
+
     public  void createNotify(Announce announce){
         announceDAO.add(announce);
     }
@@ -47,6 +48,7 @@ public class NotifyService {
         userNotify.setNotifyType(Contants.userNotify.TYPE_MESSAGE);
         userNotify.setUserId(message.getReceiverId());
         userNotifyDAO.add(userNotify);
+
         //将message插入发送方的userNotify
         userNotify = new UserNotify();
         userNotify.setCreateTime(message.getCreateTime());
@@ -56,10 +58,19 @@ public class NotifyService {
         userNotify.setUserId(message.getSenderId());
         userNotifyDAO.add(userNotify);
     }
-
+    public int getSessionId(int userId1,int userId2){
+        Session session = sessionDAO.querySession(userId1,userId2);
+        if (session == null){
+            Session newSession = new Session(userId1,userId2);
+            sessionDAO.add(newSession);
+            return newSession.getoId();
+        }
+        return session.getoId();
+    }
     public void readUserNotify(int oId){
         userNotifyDAO.setHasRead(oId);
     }
+
     /**
      * @Description: 获取指定用户的reminder/message类型的消息的前50条，messageList则是所有会话的各前50条
      * @param: userId 
@@ -110,15 +121,7 @@ public class NotifyService {
             readStatusList.put(meNotify.getoId(),meNotify.getHasRead());
         }
     }
-    public int getSessionId(int userId1,int userId2){
-        Session session = sessionDAO.querySession(userId1,userId2);
-        if (session == null){
-            Session newSession = new Session(userId1,userId2);
-            sessionDAO.add(newSession);
-            return newSession.getoId();
-        }
-        return session.getoId();
-    }
+
     public void pullReminder(int userId){
         // 拉取用当前用户有关的新提醒
         //从userNotify中找出最新一条Reminder 的时间戳，查询该时间之后的Reminder
@@ -129,16 +132,17 @@ public class NotifyService {
             //reminders = reminderDAO.queryReminderList(100);
             // 用户发布的帖子有关
             reminders.addAll(reminderDAO.queryRemindersRelateToArticle(userId,50));
-            // 用户发布的回帖有关
+            // 用户发布的回复有关
             reminders.addAll(reminderDAO.queryRemindersRelateToReply(userId,50));
             // 用户发布的评论有关
+            reminders.addAll(reminderDAO.queryRemindersRelateToComment(userId,50));
             // 用户自身有关
             // 用户关注的帖子有关
         }
         else {
             reminders.addAll(reminderDAO.queryRemindersRelateToArticleAfterTime(userId,latestReminderNotify.getCreateTime(),50));
             reminders.addAll(reminderDAO.queryRemindersRelateToReplyAfterTime(userId,latestReminderNotify.getCreateTime(),50));
-            //reminders = reminderDAO.queryReminderAfterTime(latestReminderNotify.getCreateTime(),100);
+            reminders.addAll(reminderDAO.queryRemindersRelateToCommentAfterTime(userId,latestReminderNotify.getCreateTime(),50));
         }
         //按当前用户的订阅规则进行过滤，将过滤后的结果写入该用户的userNotify
         HashMap<Integer,HashMap<Integer,Integer>> userSubscriptionMap = getUserSubscription(userId);
@@ -167,7 +171,9 @@ public class NotifyService {
             userNotifyDAO.add(new UserNotify(userId,announce.getCreateTime(),Contants.userNotify.UNREAD,announce.getoId(),announce.getTargetType()));
         }
     }
+
     public HashMap<Integer,HashMap<Integer,Integer>> getUserSubscription(int userId){
+
         /**
          * @Description:
          * @param: userId
@@ -178,24 +184,25 @@ public class NotifyService {
         List<UserSubscription> userSubscriptions = userSubscriptionDAO.queryUserSubscriptionList(userId);
         HashMap<Integer,HashMap<Integer,Integer>> userSubscriptionMap = new HashMap<>();
 
-        //我发布的主帖-回帖/评论/点赞
+        //我发布的帖子被评论/点赞
         HashMap<Integer,Integer> action = new HashMap<>();
         action.put(Contants.reminder.ACTION_COMMENT,Contants.userSubscription.UNSUBSCRIBE);
-        action.put(Contants.reminder.ACTION_REPLY,Contants.userSubscription.UNSUBSCRIBE);
+        //action.put(Contants.reminder.ACTION_REPLY,Contants.userSubscription.UNSUBSCRIBE);
         action.put(Contants.reminder.ACTION_LIKE,Contants.userSubscription.UNSUBSCRIBE);
         userSubscriptionMap.put(Contants.reminder.TARGET_TYPE_ARTICLE,action);
 
-        //我发布的回帖-回帖/评论/点赞
+        // 我发布的评论-回复/点赞
         action = new HashMap<>();
-        action.put(Contants.reminder.ACTION_COMMENT,Contants.userSubscription.UNSUBSCRIBE);
+        action.put(Contants.reminder.ACTION_LIKE,Contants.userSubscription.UNSUBSCRIBE);
         action.put(Contants.reminder.ACTION_REPLY,Contants.userSubscription.UNSUBSCRIBE);
+        userSubscriptionMap.put(Contants.reminder.TARGET_TYPE_COMMENT,action);
+
+        //我发布的回复-被点赞
+        action = new HashMap<>();
+        //action.put(Contants.reminder.ACTION_COMMENT,Contants.userSubscription.UNSUBSCRIBE);
+        //action.put(Contants.reminder.ACTION_REPLY,Contants.userSubscription.UNSUBSCRIBE);
         action.put(Contants.reminder.ACTION_LIKE,Contants.userSubscription.UNSUBSCRIBE);
         userSubscriptionMap.put(Contants.reminder.TARGET_TYPE_REPLY,action);
-
-        // 我发布的评论-点赞
-        action = new HashMap<>();
-        action.put(Contants.reminder.ACTION_LIKE,Contants.userSubscription.UNSUBSCRIBE);
-        userSubscriptionMap.put(Contants.reminder.TARGET_TYPE_COMMENT,action);
 
         // 我自己-被关注
         action = new HashMap<>();
@@ -215,16 +222,18 @@ public class NotifyService {
     }
 
     public int[] subscriptionReflex(HashMap<Integer,HashMap<Integer,Integer>> subMap){
-        int[] result = new int[9];
-        result[0] = subMap.get(Contants.reminder.TARGET_TYPE_ARTICLE).get(Contants.reminder.ACTION_REPLY);
-        result[1] = subMap.get(Contants.reminder.TARGET_TYPE_ARTICLE).get(Contants.reminder.ACTION_COMMENT);
-        result[2] = subMap.get(Contants.reminder.TARGET_TYPE_ARTICLE).get(Contants.reminder.ACTION_LIKE);
-        result[3] = subMap.get(Contants.reminder.TARGET_TYPE_ARTICLE).get(Contants.reminder.ACTION_REPLY);
-        result[4] = subMap.get(Contants.reminder.TARGET_TYPE_ARTICLE).get(Contants.reminder.ACTION_COMMENT);
-        result[5] = subMap.get(Contants.reminder.TARGET_TYPE_ARTICLE).get(Contants.reminder.ACTION_LIKE);
-        result[6] = subMap.get(Contants.reminder.TARGET_TYPE_COMMENT).get(Contants.reminder.ACTION_LIKE);
-        result[7] = subMap.get(Contants.reminder.TARGET_TYPE_YOUSELF).get(Contants.reminder.ACTION_FOLLOWED);
-        result[8] = subMap.get(Contants.reminder.TARGET_TYPE_FOLLOWED_ARTICLE).get(Contants.reminder.ACTION_REPLY);
+        int[] result = new int[7];
+        result[0] = subMap.get(Contants.reminder.TARGET_TYPE_ARTICLE).get(Contants.reminder.ACTION_COMMENT);
+        result[1] = subMap.get(Contants.reminder.TARGET_TYPE_ARTICLE).get(Contants.reminder.ACTION_LIKE);
+
+        result[2] = subMap.get(Contants.reminder.TARGET_TYPE_COMMENT).get(Contants.reminder.ACTION_REPLY);
+        result[3] = subMap.get(Contants.reminder.TARGET_TYPE_COMMENT).get(Contants.reminder.ACTION_LIKE);
+
+        result[4] = subMap.get(Contants.reminder.TARGET_TYPE_REPLY).get(Contants.reminder.ACTION_LIKE);
+
+        result[5] = subMap.get(Contants.reminder.TARGET_TYPE_YOUSELF).get(Contants.reminder.ACTION_FOLLOWED);
+        result[6] = subMap.get(Contants.reminder.TARGET_TYPE_FOLLOWED_ARTICLE).get(Contants.reminder.ACTION_COMMENT);
+
         return result;
     }
 
@@ -233,38 +242,32 @@ public class NotifyService {
         switch (id){
             case 0:{
                 result[0] = Contants.reminder.TARGET_TYPE_ARTICLE;
-                result[1] = Contants.reminder.ACTION_REPLY;
+                result[1] = Contants.reminder.ACTION_COMMENT;
             }break;
             case 1:{
                 result[0] = Contants.reminder.TARGET_TYPE_ARTICLE;
-                result[1] = Contants.reminder.ACTION_COMMENT;
+                result[1] = Contants.reminder.ACTION_LIKE;
             }break;
             case 2:{
-                result[0] = Contants.reminder.TARGET_TYPE_ARTICLE;
-                result[1] = Contants.reminder.ACTION_LIKE;
-            }break;
-            case 3:{
-                result[0] = Contants.reminder.TARGET_TYPE_REPLY;
+                result[0] = Contants.reminder.TARGET_TYPE_COMMENT;
                 result[1] = Contants.reminder.ACTION_REPLY;
             }break;
-            case 4:{
-                result[0] = Contants.reminder.TARGET_TYPE_REPLY;
-                result[1] = Contants.reminder.ACTION_COMMENT;
-            }break;
-            case 5:{
-                result[0] = Contants.reminder.TARGET_TYPE_REPLY;
-                result[1] = Contants.reminder.ACTION_LIKE;
-            }break;
-            case 6:{
+            case 3:{
                 result[0] = Contants.reminder.TARGET_TYPE_COMMENT;
                 result[1] = Contants.reminder.ACTION_LIKE;
             }break;
-            case 7:{result[0] = Contants.reminder.TARGET_TYPE_YOUSELF;
-                result[1] = Contants.reminder.ACTION_FOLLOWED;}break;
-            case 8:{
+            case 4:{
+                result[0] = Contants.reminder.TARGET_TYPE_REPLY;
+                result[1] = Contants.reminder.ACTION_LIKE;
+            }break;
+            case 5:{result[0] = Contants.reminder.TARGET_TYPE_YOUSELF;
+                result[1] = Contants.reminder.ACTION_FOLLOWED;
+            }break;
+            case 6:{
                 result[0] = Contants.reminder.TARGET_TYPE_FOLLOWED_ARTICLE;
                 result[1] = Contants.reminder.ACTION_REPLY;
             }break;
+
             default:{
                 logger.error("mismatch");
                 result[0] = -1;
