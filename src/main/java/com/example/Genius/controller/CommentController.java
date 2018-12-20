@@ -39,16 +39,17 @@ public class CommentController {
         try{
             Comment comment = new Comment();
 
-            if(hostHolder.getCurrentUser() != null) {  // 判断当前是否有登录的用户，设置评论的发布者
-                comment.setUserId(hostHolder.getCurrentUser().getoId());
-            }else {
-                JSONObject jsonObject = new JSONObject();
-
-                jsonObject.put("code",1);
-                jsonObject.put("msg","用户未登录");          // 同样，此处可以做登录跳转
-
-                return jsonObject.toJSONString();
-            }
+//            if(hostHolder.getCurrentUser() != null) {  // 判断当前是否有登录的用户，设置评论的发布者
+//                comment.setUserId(hostHolder.getCurrentUser().getoId());
+//            }else {
+//                JSONObject jsonObject = new JSONObject();
+//
+//                jsonObject.put("code",1);
+//                jsonObject.put("msg","用户未登录");          // 同样，此处可以做登录跳转
+//
+//                return jsonObject.toJSONString();
+//            }
+            comment.setUserId(Contants.TEST_GLOBAL_USER_ID);
 
             comment.setCommentReplyCount(0);
             comment.setCreateTime(new Date());
@@ -63,7 +64,7 @@ public class CommentController {
             articleService.updateArticleCommentCount(comment.getEntityId(),count);
 
             // 用户评论时，生成对帖子发布者的提醒
-            Reminder reminder = new Reminder(hostHolder.getCurrentUser().getoId(),comment.getEntityId(), Contants.reminder.TARGET_TYPE_ARTICLE,Contants.reminder.ACTION_COMMENT,comment.getCreateTime());
+            Reminder reminder = new Reminder(comment.getUserId(),comment.getEntityId(), Contants.reminder.TARGET_TYPE_ARTICLE,Contants.reminder.ACTION_COMMENT,comment.getCreateTime());
             notifyService.createNotify(reminder);
 
         }catch (Exception e) {

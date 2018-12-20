@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class UserNotifyController {
@@ -47,14 +44,24 @@ public class UserNotifyController {
         HashMap<Integer,String> reminderHashMap = new HashMap<>(); // user_notify.oId:Reminder
         HashMap<Integer,Message> messageHashMap = new HashMap<>();  // user_notify.oId:Message
         HashMap<Integer,Integer> readStatusMap = new HashMap<>();  // user_notify.oId:readStatus
+        //TODO:本来绝对不该出现在这里的，如果功能增加的话，记得注释掉下面两句----------
+        notifyService.pullReminder(userId);
+        notifyService.pullAnnounce(userId);
+        //TODO:-----------------到这里结束------------------
         notifyService.getLatestNotify(userId,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
-        HashMap<String,Object> result = new HashMap<>();
-        result.put("announces",announceHashMap);
-        result.put("reminders",reminderHashMap);
+        //HashMap<String,Object> result = new HashMap<>();
+        JSONArray jsonArray = new JSONArray();
+        for (Map.Entry<Integer, String> entry : reminderHashMap.entrySet()) {
+            jsonArray.add(entry.getValue());
+        }
+        JSONObject jsonObject= new JSONObject();
+        jsonObject.put("reminders",jsonArray);
+        //result.put("announces",announceHashMap);
+        //result.put("reminders",reminderHashMap);
         //result.put("messages",messageHashMap);
-        result.put("readStatusList",readStatusMap);
+        //result.put("readStatusList",readStatusMap);
         //logger.error(JSON.toJSONString(result));
-        return JSON.toJSONString(result);
+        return jsonObject.toJSONString();
     }
 
     /**
@@ -63,28 +70,28 @@ public class UserNotifyController {
      * @param: time 前端中最新一条userNotify的createTime
      * @return: java.lang.String
      */
-    @RequestMapping(value="userNotify/pull/{userId}")
-    @ResponseBody
-    public String pullNotify(@PathVariable("userId") int userId,@RequestParam("time") String timeString)throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date time = sdf.parse(timeString);
-        logger.error(sdf.format(time));
-        notifyService.pullReminder(userId);
-        notifyService.pullAnnounce(userId);
-        HashMap<Integer,String> announceHashMap = new HashMap<>();
-        HashMap<Integer,String> reminderHashMap = new HashMap<>();
-        HashMap<Integer,Message> messageHashMap = new HashMap<>();
-        HashMap<Integer,Integer> readStatusMap = new HashMap<>();
-        notifyService.getNotifyAfterTime(userId,time,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
-
-        HashMap<String,Object> result = new HashMap<>();
-        result.put("announces",announceHashMap);
-        result.put("reminders",reminderHashMap);
-        //result.put("messages",messageHashMap);
-        result.put("readStatusList",readStatusMap);
-
-        return JSON.toJSONString(result);
-    }
+//    @RequestMapping(value="userNotify/pull/{userId}")
+//    @ResponseBody
+//    public String pullNotify(@PathVariable("userId") int userId,@RequestParam("time") String timeString)throws ParseException {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date time = sdf.parse(timeString);
+//        logger.error(sdf.format(time));
+//        notifyService.pullReminder(userId);
+//        notifyService.pullAnnounce(userId);
+//        HashMap<Integer,String> announceHashMap = new HashMap<>();
+//        HashMap<Integer,String> reminderHashMap = new HashMap<>();
+//        HashMap<Integer,Message> messageHashMap = new HashMap<>();
+//        HashMap<Integer,Integer> readStatusMap = new HashMap<>();
+//        notifyService.getNotifyAfterTime(userId,time,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
+//
+//        HashMap<String,Object> result = new HashMap<>();
+//        result.put("announces",announceHashMap);
+//        result.put("reminders",reminderHashMap);
+//        //result.put("messages",messageHashMap);
+//        result.put("readStatusList",readStatusMap);
+//
+//        return JSON.toJSONString(result);
+//    }
 
     /**
      * @Description: 用户查询是否有新的消息，用于实时刷新消息  ---定时任务交给前端
@@ -92,23 +99,23 @@ public class UserNotifyController {
      * @param: time
      * @return: java.lang.String
      */
-    @RequestMapping(value="userNotify/refresh/{userId}")
-    @ResponseBody
-    public String refreshNotify(@PathVariable("userId") int userId,@RequestParam("time")String timeString)throws ParseException{
-        SimpleDateFormat sdf = new SimpleDateFormat(Contants.TIME_PATTERN);
-        Date time = sdf.parse(timeString);
-        HashMap<Integer,String> announceHashMap = new HashMap<>();
-        HashMap<Integer,String> reminderHashMap = new HashMap<>();
-        HashMap<Integer,Message> messageHashMap = new HashMap<>();
-        HashMap<Integer,Integer> readStatusMap = new HashMap<>();
-        notifyService.getNotifyAfterTime(userId,time,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
-        HashMap<String,Object> result = new HashMap<>();
-        result.put("announces",announceHashMap);
-        result.put("reminders",reminderHashMap);
-        //result.put("messages",messageHashMap);
-        result.put("readStatusList",readStatusMap);
-        return JSON.toJSONString(result);
-    }
+//    @RequestMapping(value="userNotify/refresh/{userId}")
+//    @ResponseBody
+//    public String refreshNotify(@PathVariable("userId") int userId,@RequestParam("time")String timeString)throws ParseException{
+//        SimpleDateFormat sdf = new SimpleDateFormat(Contants.TIME_PATTERN);
+//        Date time = sdf.parse(timeString);
+//        HashMap<Integer,String> announceHashMap = new HashMap<>();
+//        HashMap<Integer,String> reminderHashMap = new HashMap<>();
+//        HashMap<Integer,Message> messageHashMap = new HashMap<>();
+//        HashMap<Integer,Integer> readStatusMap = new HashMap<>();
+//        notifyService.getNotifyAfterTime(userId,time,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
+//        HashMap<String,Object> result = new HashMap<>();
+//        result.put("announces",announceHashMap);
+//        result.put("reminders",reminderHashMap);
+//        //result.put("messages",messageHashMap);
+//        result.put("readStatusList",readStatusMap);
+//        return JSON.toJSONString(result);
+//    }
     /**
      * @Description: 获取指定时间之前的更多的提醒类型的历史消息
      * @param: userId
@@ -133,42 +140,42 @@ public class UserNotifyController {
      * @Description: 设置指定用户的某条消息为已读
      * @param: userNotifyId
      */
-    @RequestMapping(value="userNotify/setRead/{userNotifyId}",method = {RequestMethod.POST})
-    @ResponseBody
-    public String setRead(@PathVariable("userNotifyId") int userNotifyId){
-        notifyService.readUserNotify(userNotifyId);
-        return "success";
-    }
+//    @RequestMapping(value="userNotify/setRead/{userNotifyId}",method = {RequestMethod.POST})
+//    @ResponseBody
+//    public String setRead(@PathVariable("userNotifyId") int userNotifyId){
+//        notifyService.readUserNotify(userNotifyId);
+//        return "success";
+//    }
     /**------------------------发布消息部分--------------------------*/
-    @RequestMapping(value="userNotify/createNotify/announce")
-    @ResponseBody
-    public String createAnnounce(@RequestBody HashMap<String,String> notify)throws ParseException{
-        Announce announce = new Announce();
-        int code = 1;
-        List<String> msg = new ArrayList<>();
-        if(!notify.containsKey("announceContent")){
-            msg.add("announceContent should not be empty");
-            code = 0;
-        }
-        if(!notify.containsKey("createTime")){
-            msg.add("createTime should not be empty");
-            code = 0;
-        }
-        if (code==0){
-            return JsonUtils.getJSONString(code,"fail");
-        }
-        announce.setAnnounceContent(notify.get("announceContent"));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date time = sdf.parse(notify.get("createTime"));
-        logger.error(time.toString());
-        announce.setCreateTime(time);
-        announce.setStatus(0);
-        announce.setTargetType(0);
-        logger.error(notify.get("createTime"));
-        logger.error(announce.getCreateTime().toString());
-        notifyService.createNotify(announce);
-        return JsonUtils.getJSONString(code,"success");
-    }
+//    @RequestMapping(value="userNotify/createNotify/announce")
+//    @ResponseBody
+//    public String createAnnounce(@RequestBody HashMap<String,String> notify)throws ParseException{
+//        Announce announce = new Announce();
+//        int code = 1;
+//        List<String> msg = new ArrayList<>();
+//        if(!notify.containsKey("announceContent")){
+//            msg.add("announceContent should not be empty");
+//            code = 0;
+//        }
+//        if(!notify.containsKey("createTime")){
+//            msg.add("createTime should not be empty");
+//            code = 0;
+//        }
+//        if (code==0){
+//            return JsonUtils.getJSONString(code,"fail");
+//        }
+//        announce.setAnnounceContent(notify.get("announceContent"));
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date time = sdf.parse(notify.get("createTime"));
+//        logger.error(time.toString());
+//        announce.setCreateTime(time);
+//        announce.setStatus(0);
+//        announce.setTargetType(0);
+//        logger.error(notify.get("createTime"));
+//        logger.error(announce.getCreateTime().toString());
+//        notifyService.createNotify(announce);
+//        return JsonUtils.getJSONString(code,"success");
+//    }
 //    @RequestMapping(value="userNotify/createNotify/message")
 //    @ResponseBody
 //    public String createMessage(@RequestBody HashMap<String,String> notify)throws ParseException{
@@ -237,14 +244,16 @@ public class UserNotifyController {
      */
     @RequestMapping(value="userNotify/userSubscription/update/{userId}",method = {RequestMethod.POST})
     @ResponseBody
-    public String updateUserSubscription(@PathVariable("userId") int userId,@RequestBody HashMap<Integer,Integer> subscriptionUpdate){
+    public String updateUserSubscription(@PathVariable("userId") int userId,@RequestBody HashMap<String,HashMap<Integer,Integer>> subscriptionUpdateOrigin){
+        HashMap<Integer,Integer> subscriptionUpdate = subscriptionUpdateOrigin.get("actions");
         for(HashMap.Entry<Integer,Integer> entry:subscriptionUpdate.entrySet()){
             int[] temp = notifyService.subscriptionReflexInverse(entry.getKey());
             int targetType = temp[0];
             int action = temp[1];
             notifyService.updateSubscriptionStatus(userId,targetType,action,entry.getValue());
         }
-
-        return "success";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("result",1);
+        return jsonObject.toJSONString();
     }
 }

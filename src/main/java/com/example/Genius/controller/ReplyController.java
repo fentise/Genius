@@ -50,20 +50,20 @@ public class ReplyController {
     public String addReply(@RequestParam("targetId") int targetId,
                              @RequestParam("commentId") int commentId,
                              @RequestParam("content") String content){
-        try{
+//        try{
             Reply reply = new Reply();
 
-            if(hostHolder.getCurrentUser() != null) {  // 判断当前是否有登录的用户，设置评论的发布者
-                reply.setUserId(hostHolder.getCurrentUser().getoId());
-            }else {
-                JSONObject jsonObject = new JSONObject();
-
-                jsonObject.put("code",1);
-                jsonObject.put("msg","用户未登录");          // 同样，此处可以做登录跳转
-
-                return jsonObject.toJSONString();
-            }
-
+//            if(hostHolder.getCurrentUser() != null) {  // 判断当前是否有登录的用户，设置评论的发布者
+//                reply.setUserId(hostHolder.getCurrentUser().getoId());
+//            }else {
+//                JSONObject jsonObject = new JSONObject();
+//
+//                jsonObject.put("code",1);
+//                jsonObject.put("msg","用户未登录");          // 同样，此处可以做登录跳转
+//
+//                return jsonObject.toJSONString();
+//            }
+            reply.setUserId(Contants.TEST_GLOBAL_USER_ID);
             reply.setReplyContent(content);
             reply.setLikeCount(0);
             reply.setCreateTime(new Date());
@@ -77,12 +77,12 @@ public class ReplyController {
             commentService.updateCommentReplyCount(commentId,count);
 
             // 新增回复的同时，增加对评论发布者的提醒
-            Reminder reminder = new Reminder(hostHolder.getCurrentUser().getoId(),reply.getCommentId(),Contants.reminder.TARGET_TYPE_COMMENT,Contants.reminder.ACTION_REPLY,reply.getCreateTime());
+            Reminder reminder = new Reminder(reply.getUserId(),reply.getCommentId(),Contants.reminder.TARGET_TYPE_COMMENT,Contants.reminder.ACTION_REPLY,reply.getCreateTime());
             notifyService.createNotify(reminder);
 
-        }catch (Exception e) {
-            logger.error("增加回复失败" + e.getMessage());
-        }
+//        }catch (Exception e) {
+//            logger.error("增加回复失败" + e.getMessage());
+//        }
         return GeneralUtils.getJSONString(0);
     }
 

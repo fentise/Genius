@@ -91,14 +91,14 @@ public class NotifyService {
      * @param: readStatusList
      */
     public  void getLatestNotify(int userId,HashMap<Integer,String> announceList,HashMap<Integer,String> reminderList,HashMap<Integer,Message> messageList,HashMap<Integer,Integer> readStatusList){
-        List<UserNotify> announceNotify = userNotifyDAO.queryLatestNotifyListWithType(userId,Contants.userNotify.TYPE_ANNOUNCE,100);
+        List<UserNotify> announceNotify = userNotifyDAO.queryLatestNotifyListWithType(userId,Contants.userNotify.TYPE_ANNOUNCE,10);
 
         for(UserNotify annoNotify:announceNotify){
             announceList.put(annoNotify.getoId(),this.getAnnounceContent(announceDAO.queryAnnounce(annoNotify.getNotifyId())));
             readStatusList.put(annoNotify.getoId(),annoNotify.getHasRead());
         }
 
-        List<UserNotify> reminderNotify = userNotifyDAO.queryLatestNotifyListWithType(userId,Contants.userNotify.TYPE_REMINDER,100);
+        List<UserNotify> reminderNotify = userNotifyDAO.queryLatestNotifyListWithType(userId,Contants.userNotify.TYPE_REMINDER,10);
         for(UserNotify reNotify:reminderNotify){
             reminderList.put(reNotify.getoId(),this.getReminderContent(reminderDAO.queryReminder(reNotify.getNotifyId())));
             readStatusList.put(reNotify.getoId(),reNotify.getHasRead());

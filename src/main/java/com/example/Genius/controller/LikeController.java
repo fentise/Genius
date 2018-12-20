@@ -31,12 +31,12 @@ public class LikeController {
     @RequestMapping(path={"/likeComment"},method={RequestMethod.POST})
     @ResponseBody
     public String likeComment(@RequestParam("commentId") int commentId){
-        if(hostHolder.getCurrentUser() == null) {
-            return GeneralUtils.getJSONString(1,"用户未登录");
-        }
+//        if(hostHolder.getCurrentUser() == null) {
+//            return GeneralUtils.getJSONString(1,"用户未登录");
+//        }
 
         UserLike userLike = new UserLike();
-        userLike.setUserId(hostHolder.getCurrentUser().getoId());
+        userLike.setUserId(Contants.TEST_GLOBAL_USER_ID);
         userLike.setCreateTime(new Date());
         userLike.setEntityId(commentId);
         userLike.setEntityType(EntityType.ENTITY_COMMENT);
@@ -65,12 +65,12 @@ public class LikeController {
     @RequestMapping(path={"/likeArticle"},method={RequestMethod.POST})
     @ResponseBody
     public String likeArticle(@RequestParam("articleId") int articleId){
-        if(hostHolder.getCurrentUser() == null) {
-            return GeneralUtils.getJSONString(1,"用户未登录");
-        }
+//        if(hostHolder.getCurrentUser() == null) {
+//            return GeneralUtils.getJSONString(1,"用户未登录");
+//        }
 
         UserLike userLike = new UserLike();
-        userLike.setUserId(hostHolder.getCurrentUser().getoId());
+        userLike.setUserId(Contants.TEST_GLOBAL_USER_ID);
         userLike.setCreateTime(new Date());
         userLike.setEntityId(articleId);
         userLike.setEntityType(EntityType.ENTITY_ARTICLE);
@@ -99,12 +99,12 @@ public class LikeController {
     @RequestMapping(path={"/likeReply"},method={RequestMethod.POST})
     @ResponseBody
     public String likeReply(@RequestParam("replyId") int replyId){
-        if(hostHolder.getCurrentUser() == null) {
-            return GeneralUtils.getJSONString(1,"用户未登录");
-        }
+//        if(hostHolder.getCurrentUser() == null) {
+//            return GeneralUtils.getJSONString(1,"用户未登录");
+//        }
 
         UserLike userLike = new UserLike();
-        userLike.setUserId(hostHolder.getCurrentUser().getoId());
+        userLike.setUserId(Contants.TEST_GLOBAL_USER_ID);
         userLike.setCreateTime(new Date());
         userLike.setEntityId(replyId);
         userLike.setEntityType(EntityType.ENTITY_REPLY);

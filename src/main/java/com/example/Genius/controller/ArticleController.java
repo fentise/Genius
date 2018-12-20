@@ -48,7 +48,6 @@ public class ArticleController {
                               @RequestParam("content") String content,
                              @RequestParam(value = "theme",defaultValue = "0") int theme){
         try {
-
             Article article = new Article();
             article.setArticleContent(content);
             article.setArticleTitle(title);
@@ -60,16 +59,17 @@ public class ArticleController {
             article.setArticleLikeCount(0);
             article.setArticleStatus(0);
 
-            if(hostHolder.getCurrentUser() == null) {        // 若未登录，则要求用户做登录处理，此处打算用loginRequiredInterceptor设置拦截
-
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("code",1);
-                jsonObject.put("msg","用户未登录");                      // 还可以添加一个next跳转参数
-
-                return jsonObject.toJSONString();
-            }else {
-                article.setArticleAuthorId(hostHolder.getCurrentUser().getoId());
-            }
+//            if(hostHolder.getCurrentUser() == null) {        // 若未登录，则要求用户做登录处理，此处打算用loginRequiredInterceptor设置拦截
+//
+//                JSONObject jsonObject = new JSONObject();
+//                jsonObject.put("code",1);
+//                jsonObject.put("msg","用户未登录");                      // 还可以添加一个next跳转参数
+//
+//                return jsonObject.toJSONString();
+//            }else {
+//                article.setArticleAuthorId(hostHolder.getCurrentUser().getoId());
+//            }
+            article.setArticleAuthorId(Contants.TEST_GLOBAL_USER_ID);
             if(articleService.addArticle(article) > 0) {
                 return GeneralUtils.getJSONString(0);          // 发表文章成功
             }
