@@ -35,12 +35,12 @@ public interface ReminderDAO {
     @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="article_reminder.oId")
     List<Reminder> queryRemindersRelateToArticle(@Param("userId") int userId,@Param("limit") int limit);
 
-    @Select("select article_reminder.*  " +
-            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_ARTICLE+"}) as article_reminder inner join (select * from article where articleAuthorId = #{userId}) as user_article" +
-            "on article_reminder.targetId = user_article.oId " +
-            "where article_reminder.createTime > #{time} "+
-            "order by article_reminder.createTime desc" +
-            "limit #{limit}")
+    @Select({"select article_reminder.*  " ,
+            "from (select * from reminder  where targetType = ${"+ Contants.reminder.TARGET_TYPE_ARTICLE+"}) as article_reminder inner join (select * from article where articleAuthorId = #{userId}) as user_article",
+            "on article_reminder.targetId = user_article.oId" ,
+            "where article_reminder.createTime > #{time}",
+            "order by article_reminder.createTime desc" ,
+            "limit #{limit}"})
     @Options(useGeneratedKeys=true, keyProperty="oId", keyColumn="article_reminder.oId")
     List<Reminder> queryRemindersRelateToArticleAfterTime(@Param("userId") int userId,@Param("time") Date time,@Param("limit") int limit);
 

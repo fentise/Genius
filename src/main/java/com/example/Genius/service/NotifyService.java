@@ -9,11 +9,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
 public class NotifyService {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    @Autowired
+    private UserDAO userDAO;
     @Autowired
     private AnnounceDAO announceDAO;
     @Autowired
@@ -24,6 +28,13 @@ public class NotifyService {
     private UserNotifyDAO userNotifyDAO;
     @Autowired
     private UserSubscriptionDAO userSubscriptionDAO;
+
+    @Autowired
+    private ArticleDAO articleDAO;
+    @Autowired
+    private ReplyDAO replyDAO;
+    @Autowired
+    private CommentDAO commentDAO;
 
     @Autowired
     private SessionDAO sessionDAO;
@@ -72,77 +83,76 @@ public class NotifyService {
     }
 
     /**
-     * @Description: 获取指定用户的reminder/message类型的消息的前50条，messageList则是所有会话的各前50条
+     * @Description: 获取指定用户的reminder/message类型的消息的前100条，messageList则是所有会话的各前100条
      * @param: userId 
      * @param: announceList
      * @param: reminderList
      * @param: messageList
      * @param: readStatusList
      */
-    public  void getLatestNotify(int userId,HashMap<Integer,Announce> announceList,HashMap<Integer,Reminder> reminderList,HashMap<Integer,Message> messageList,HashMap<Integer,Integer> readStatusList){
-        List<UserNotify> announceNotify = userNotifyDAO.queryLatestNotifyListWithType(userId,Contants.userNotify.TYPE_ANNOUNCE,50);
+    public  void getLatestNotify(int userId,HashMap<Integer,String> announceList,HashMap<Integer,String> reminderList,HashMap<Integer,Message> messageList,HashMap<Integer,Integer> readStatusList){
+        List<UserNotify> announceNotify = userNotifyDAO.queryLatestNotifyListWithType(userId,Contants.userNotify.TYPE_ANNOUNCE,100);
 
         for(UserNotify annoNotify:announceNotify){
-            announceList.put(annoNotify.getoId(),announceDAO.queryAnnounce(annoNotify.getNotifyId()));
+            announceList.put(annoNotify.getoId(),this.getAnnounceContent(announceDAO.queryAnnounce(annoNotify.getNotifyId())));
             readStatusList.put(annoNotify.getoId(),annoNotify.getHasRead());
         }
 
-        List<UserNotify> reminderNotify = userNotifyDAO.queryLatestNotifyListWithType(userId,Contants.userNotify.TYPE_REMINDER,50);
+        List<UserNotify> reminderNotify = userNotifyDAO.queryLatestNotifyListWithType(userId,Contants.userNotify.TYPE_REMINDER,100);
         for(UserNotify reNotify:reminderNotify){
-            reminderList.put(reNotify.getoId(),reminderDAO.queryReminder(reNotify.getNotifyId()));
+            reminderList.put(reNotify.getoId(),this.getReminderContent(reminderDAO.queryReminder(reNotify.getNotifyId())));
             readStatusList.put(reNotify.getoId(),reNotify.getHasRead());
         }
 
         // TODO:message按会话方式进行查询-->测试一下
-        List<UserNotify> messageNotify = userNotifyDAO.queryMessageNotifyListOfSession(userId,50);
-        for(UserNotify meNotify:messageNotify){
-            messageList.put(meNotify.getoId(),messageDAO.queryMessage(meNotify.getNotifyId()));
-            readStatusList.put(meNotify.getoId(),meNotify.getHasRead());
-        }
+//        List<UserNotify> messageNotify = userNotifyDAO.queryMessageNotifyListOfSession(userId,100);
+//        for(UserNotify meNotify:messageNotify){
+//            messageList.put(meNotify.getoId(),messageDAO.queryMessage(meNotify.getNotifyId()));
+//            readStatusList.put(meNotify.getoId(),meNotify.getHasRead());
+//        }
 
     }
-    public  void getNotifyAfterTime(int userId,Date time,HashMap<Integer,Announce> announceList,HashMap<Integer,Reminder> reminderList,HashMap<Integer,Message> messageList,HashMap<Integer,Integer> readStatusList){
+    public  void getNotifyAfterTime(int userId,Date time,HashMap<Integer,String> announceList,HashMap<Integer,String> reminderList,HashMap<Integer,Message> messageList,HashMap<Integer,Integer> readStatusList){
         // 类似上面的方式，增加时间起始点限制，返回时间起始点之后的所有消息,senderId为自己的message过滤掉，这个工作交给前端吧
-        List<UserNotify> announceNotify = userNotifyDAO.queryLatestNotifyListWithTypeAfterTime(userId,Contants.userNotify.TYPE_ANNOUNCE,50,time);
+        List<UserNotify> announceNotify = userNotifyDAO.queryLatestNotifyListWithTypeAfterTime(userId,Contants.userNotify.TYPE_ANNOUNCE,100,time);
         for(UserNotify annoNotify:announceNotify){
-            announceList.put(annoNotify.getoId(),announceDAO.queryAnnounce(annoNotify.getNotifyId()));
+            announceList.put(annoNotify.getoId(),this.getAnnounceContent(announceDAO.queryAnnounce(annoNotify.getNotifyId())));
             readStatusList.put(annoNotify.getoId(),annoNotify.getHasRead());
         }
-        List<UserNotify> reminderNotify = userNotifyDAO.queryLatestNotifyListWithTypeAfterTime(userId,Contants.userNotify.TYPE_REMINDER,50,time);
+        List<UserNotify> reminderNotify = userNotifyDAO.queryLatestNotifyListWithTypeAfterTime(userId,Contants.userNotify.TYPE_REMINDER,100,time);
         for(UserNotify reNotify:reminderNotify){
-            reminderList.put(reNotify.getoId(),reminderDAO.queryReminder(reNotify.getNotifyId()));
+            reminderList.put(reNotify.getoId(),this.getReminderContent(reminderDAO.queryReminder(reNotify.getNotifyId())));
             readStatusList.put(reNotify.getoId(),reNotify.getHasRead());
         }
 
         // TODO:message按会话方式进行查询-->测试一下
-        List<UserNotify> messageNotify = userNotifyDAO.queryMessageNotifyListOfSessionAfterTime(userId,50,time);
-        for(UserNotify meNotify:messageNotify){
-            messageList.put(meNotify.getoId(),messageDAO.queryMessage(meNotify.getNotifyId()));
-            readStatusList.put(meNotify.getoId(),meNotify.getHasRead());
-        }
+//        List<UserNotify> messageNotify = userNotifyDAO.queryMessageNotifyListOfSessionAfterTime(userId,100,time);
+//        for(UserNotify meNotify:messageNotify){
+//            messageList.put(meNotify.getoId(),messageDAO.queryMessage(meNotify.getNotifyId()));
+//            readStatusList.put(meNotify.getoId(),meNotify.getHasRead());
+//        }
     }
 
     public void pullReminder(int userId){
         // 拉取用当前用户有关的新提醒
         //从userNotify中找出最新一条Reminder 的时间戳，查询该时间之后的Reminder
         UserNotify latestReminderNotify = userNotifyDAO.queryLatestNotifyWithType(userId,Contants.userNotify.TYPE_REMINDER);
-        logger.error(String.format("latest==null %b",latestReminderNotify == null));
         List<Reminder> reminders = new ArrayList<>();
         if(latestReminderNotify == null){//当前用户没有接收过提醒类消息
             //reminders = reminderDAO.queryReminderList(100);
             // 用户发布的帖子有关
-            reminders.addAll(reminderDAO.queryRemindersRelateToArticle(userId,50));
+            reminders.addAll(reminderDAO.queryRemindersRelateToArticle(userId,100));
             // 用户发布的回复有关
-            reminders.addAll(reminderDAO.queryRemindersRelateToReply(userId,50));
+            reminders.addAll(reminderDAO.queryRemindersRelateToReply(userId,100));
             // 用户发布的评论有关
-            reminders.addAll(reminderDAO.queryRemindersRelateToComment(userId,50));
+            reminders.addAll(reminderDAO.queryRemindersRelateToComment(userId,100));
             // 用户自身有关
             // 用户关注的帖子有关
         }
         else {
-            reminders.addAll(reminderDAO.queryRemindersRelateToArticleAfterTime(userId,latestReminderNotify.getCreateTime(),50));
-            reminders.addAll(reminderDAO.queryRemindersRelateToReplyAfterTime(userId,latestReminderNotify.getCreateTime(),50));
-            reminders.addAll(reminderDAO.queryRemindersRelateToCommentAfterTime(userId,latestReminderNotify.getCreateTime(),50));
+            reminders.addAll(reminderDAO.queryRemindersRelateToArticleAfterTime(userId,latestReminderNotify.getCreateTime(),100));
+            reminders.addAll(reminderDAO.queryRemindersRelateToReplyAfterTime(userId,latestReminderNotify.getCreateTime(),100));
+            reminders.addAll(reminderDAO.queryRemindersRelateToCommentAfterTime(userId,latestReminderNotify.getCreateTime(),100));
         }
         //按当前用户的订阅规则进行过滤，将过滤后的结果写入该用户的userNotify
         HashMap<Integer,HashMap<Integer,Integer>> userSubscriptionMap = getUserSubscription(userId);
@@ -211,7 +221,7 @@ public class NotifyService {
 
         // 我关注的帖子有新回帖
         action = new HashMap<>();
-        action.put(Contants.reminder.ACTION_REPLY,Contants.userSubscription.UNSUBSCRIBE);
+        action.put(Contants.reminder.ACTION_COMMENT,Contants.userSubscription.UNSUBSCRIBE);
         userSubscriptionMap.put(Contants.reminder.TARGET_TYPE_FOLLOWED_ARTICLE,action);
 
         // 遍历每一条订阅规则，更新其在userSubscriptionMap中的值
@@ -265,7 +275,7 @@ public class NotifyService {
             }break;
             case 6:{
                 result[0] = Contants.reminder.TARGET_TYPE_FOLLOWED_ARTICLE;
-                result[1] = Contants.reminder.ACTION_REPLY;
+                result[1] = Contants.reminder.ACTION_COMMENT;
             }break;
 
             default:{
@@ -292,22 +302,48 @@ public class NotifyService {
         }
         return true;
     }
-//    private String getReminderContent(Reminder reminder){
-//        String time = null;
-//        String target = null;
-//        String action = null;
-//        String contentPattern = "用户在 %s %s 你的 %s ";
-//        if(reminder.getTargetType() == Contants.reminder.TARGET_TYPE_ARTICLE){
-//            if(reminder.getAction() == Contants.reminder.ACTION_LIKE)
-//                action = "评论了";
-//            else if(reminder.getAction() == Contants.reminder.ACTION_LIKE)
-//                action = "赞同了";
-//        }else if(reminder.getTargetType() == Contants.reminder.TARGET_TYPE_COMMENT){
-//
-//        }else if(reminder.getTargetType() == Contants.reminder.TARGET_TYPE_REPLY){
-//
-//        }
-//    }
+    private String getAnnounceContent(Announce announce){
+        String contentPattern = "系统公告：%s\n发布于%s";
+        String content = announce.getAnnounceContent();
+        SimpleDateFormat sdf = new SimpleDateFormat(Contants.TIME_PATTERN);
+        String time = sdf.format(announce.getCreateTime());
+        return String.format(contentPattern,content,time);
+    }
+    private String getReminderContent(Reminder reminder){
+        String contentPattern = "用户 %s 在 %s %s 你的 %s ";
+        String userName = userDAO.selectByUserId(reminder.getSenderId()).getUserNickname();
+        //TODO:附上用户的个人主页URL
+        SimpleDateFormat sdf = new SimpleDateFormat(Contants.TIME_PATTERN);
+        String time = sdf.format(reminder.getCreateTime());
+        String target = "";
+        String action = "";
+
+        if(reminder.getTargetType() == Contants.reminder.TARGET_TYPE_ARTICLE){
+            Article article = articleDAO.getArticleById(reminder.getTargetId());
+            target = "帖子 '"+ article.getArticleTitle() + "'";
+            // TODO: 附上帖子的URL
+            if(reminder.getAction() == Contants.reminder.ACTION_COMMENT)
+                action = "评论了";
+            else if(reminder.getAction() == Contants.reminder.ACTION_LIKE)
+                action = "赞同了";
+        }else if(reminder.getTargetType() == Contants.reminder.TARGET_TYPE_COMMENT){
+            Comment comment = commentDAO.queryComment(reminder.getTargetId());
+            Article article = articleDAO.getArticleById(comment.getEntityId());
+            // TODO:附上帖子/评论的URL
+            target = "对帖子 '"+article.getArticleTitle()+"'的评论 '"+comment.getContent()+"'";
+            if(reminder.getAction() == Contants.reminder.ACTION_REPLY)
+                action = "回复了";
+            else if(reminder.getAction() == Contants.reminder.ACTION_LIKE)
+                action = "赞同了";
+        }else if(reminder.getTargetType() == Contants.reminder.TARGET_TYPE_REPLY){
+            // TODO:附上回复/帖子的URL
+            Reply reply = replyDAO.queryRely(reminder.getTargetId());
+            target = "回复'"+reply.getReplyContent()+"'";
+            if(reminder.getAction() == Contants.reminder.ACTION_LIKE)
+                action = "赞同了";
+        }
+        return String.format(contentPattern,userName,time,action,target);
+    }
 
 
 }

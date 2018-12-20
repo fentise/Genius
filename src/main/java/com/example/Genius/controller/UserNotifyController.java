@@ -43,15 +43,15 @@ public class UserNotifyController {
     @RequestMapping("/userNotify/{userId}")
     @ResponseBody
     public String getUserNotifyList(@PathVariable("userId") int userId){
-        HashMap<Integer,Announce> announceHashMap = new HashMap<>(); // user_notify.oId:Announce   user_notify.oId 用于设置readStatus
-        HashMap<Integer,Reminder> reminderHashMap = new HashMap<>(); // user_notify.oId:Reminder
+        HashMap<Integer,String> announceHashMap = new HashMap<>(); // user_notify.oId:Announce   user_notify.oId 用于设置readStatus
+        HashMap<Integer,String> reminderHashMap = new HashMap<>(); // user_notify.oId:Reminder
         HashMap<Integer,Message> messageHashMap = new HashMap<>();  // user_notify.oId:Message
         HashMap<Integer,Integer> readStatusMap = new HashMap<>();  // user_notify.oId:readStatus
         notifyService.getLatestNotify(userId,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
         HashMap<String,Object> result = new HashMap<>();
         result.put("announces",announceHashMap);
         result.put("reminders",reminderHashMap);
-        result.put("messages",messageHashMap);
+        //result.put("messages",messageHashMap);
         result.put("readStatusList",readStatusMap);
         //logger.error(JSON.toJSONString(result));
         return JSON.toJSONString(result);
@@ -71,8 +71,8 @@ public class UserNotifyController {
         logger.error(sdf.format(time));
         notifyService.pullReminder(userId);
         notifyService.pullAnnounce(userId);
-        HashMap<Integer,Announce> announceHashMap = new HashMap<>();
-        HashMap<Integer,Reminder> reminderHashMap = new HashMap<>();
+        HashMap<Integer,String> announceHashMap = new HashMap<>();
+        HashMap<Integer,String> reminderHashMap = new HashMap<>();
         HashMap<Integer,Message> messageHashMap = new HashMap<>();
         HashMap<Integer,Integer> readStatusMap = new HashMap<>();
         notifyService.getNotifyAfterTime(userId,time,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
@@ -80,7 +80,7 @@ public class UserNotifyController {
         HashMap<String,Object> result = new HashMap<>();
         result.put("announces",announceHashMap);
         result.put("reminders",reminderHashMap);
-        result.put("messages",messageHashMap);
+        //result.put("messages",messageHashMap);
         result.put("readStatusList",readStatusMap);
 
         return JSON.toJSONString(result);
@@ -95,17 +95,17 @@ public class UserNotifyController {
     @RequestMapping(value="userNotify/refresh/{userId}")
     @ResponseBody
     public String refreshNotify(@PathVariable("userId") int userId,@RequestParam("time")String timeString)throws ParseException{
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat(Contants.TIME_PATTERN);
         Date time = sdf.parse(timeString);
-        HashMap<Integer,Announce> announceHashMap = new HashMap<>();
-        HashMap<Integer,Reminder> reminderHashMap = new HashMap<>();
+        HashMap<Integer,String> announceHashMap = new HashMap<>();
+        HashMap<Integer,String> reminderHashMap = new HashMap<>();
         HashMap<Integer,Message> messageHashMap = new HashMap<>();
         HashMap<Integer,Integer> readStatusMap = new HashMap<>();
         notifyService.getNotifyAfterTime(userId,time,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
         HashMap<String,Object> result = new HashMap<>();
         result.put("announces",announceHashMap);
         result.put("reminders",reminderHashMap);
-        result.put("messages",messageHashMap);
+        //result.put("messages",messageHashMap);
         result.put("readStatusList",readStatusMap);
         return JSON.toJSONString(result);
     }
@@ -116,18 +116,18 @@ public class UserNotifyController {
      * @param: limit
      * @return: java.lang.String
      */
-    @RequestMapping(value="userNotify/getReminder/{userId}/{time}/{limit}")
-    public String getMoreReminder(@PathVariable("userId")int userId, @PathVariable("time")Date time,@PathVariable("limit") int limit){
-        return "";
-    }
-    @RequestMapping(value="userNotify/getAnnounce/{time}/{limit}")
-    public String getMoreAnnounce(@PathVariable("userId")int userId, @PathVariable("time")Date time,@PathVariable("limit") int limit){
-        return "";
-    }
-    @RequestMapping(value="userNotify/getMessage/{time}/{limit}")
-    public String getMoreMessage(@PathVariable("userId")int userId, @PathVariable("time")Date time,@PathVariable("limit") int limit){
-        return "";
-    }
+//    @RequestMapping(value="userNotify/getReminder/{userId}/{time}/{limit}")
+//    public String getMoreReminder(@PathVariable("userId")int userId, @PathVariable("time")Date time,@PathVariable("limit") int limit){
+//        return "";
+//    }
+//    @RequestMapping(value="userNotify/getAnnounce/{time}/{limit}")
+//    public String getMoreAnnounce(@PathVariable("userId")int userId, @PathVariable("time")Date time,@PathVariable("limit") int limit){
+//        return "";
+//    }
+//    @RequestMapping(value="userNotify/getMessage/{time}/{limit}")
+//    public String getMoreMessage(@PathVariable("userId")int userId, @PathVariable("time")Date time,@PathVariable("limit") int limit){
+//        return "";
+//    }
 
     /**
      * @Description: 设置指定用户的某条消息为已读
@@ -169,42 +169,42 @@ public class UserNotifyController {
         notifyService.createNotify(announce);
         return JsonUtils.getJSONString(code,"success");
     }
-    @RequestMapping(value="userNotify/createNotify/message")
-    @ResponseBody
-    public String createMessage(@RequestBody HashMap<String,String> notify)throws ParseException{
-        Message message = new Message();
-        // 值检查
-        int code = 1;
-        List<String> msg = new ArrayList<>();
-        if( !notify.containsKey("senderId")){
-            code = 0;
-            msg.add("senderId should not empty");
-        }
-
-        if(!notify.containsKey("receiverId")){
-            code = 0;
-            msg.add("senderId should not empty");
-        }
-
-
-        if (code == 0){
-            return JsonUtils.getJSONString(code,"fail"); //TODO:看情况增加错误信息
-        }
-        if(!notify.containsKey("sessionId")){
-            message.setSessionId(notifyService.getSessionId(Integer.parseInt(notify.get("senderId")),Integer.parseInt(notify.get("receiverId"))));
-        }
-        else{
-            message.setSessionId(Integer.parseInt(notify.get("sessionId")));
-        }
-        message.setSenderId(Integer.parseInt(notify.get("senderId")));
-        message.setReceiverId(Integer.parseInt(notify.get("receiverId")));
-        message.setMessageContent(notify.get("messageContent"));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date time = sdf.parse(notify.get("createTime"));
-        message.setCreateTime(time);
-        notifyService.createNotify(message);
-        return JsonUtils.getJSONString(code,"success");
-    }
+//    @RequestMapping(value="userNotify/createNotify/message")
+//    @ResponseBody
+//    public String createMessage(@RequestBody HashMap<String,String> notify)throws ParseException{
+//        Message message = new Message();
+//        // 值检查
+//        int code = 1;
+//        List<String> msg = new ArrayList<>();
+//        if( !notify.containsKey("senderId")){
+//            code = 0;
+//            msg.add("senderId should not empty");
+//        }
+//
+//        if(!notify.containsKey("receiverId")){
+//            code = 0;
+//            msg.add("senderId should not empty");
+//        }
+//
+//
+//        if (code == 0){
+//            return JsonUtils.getJSONString(code,"fail"); //TODO:看情况增加错误信息
+//        }
+//        if(!notify.containsKey("sessionId")){
+//            message.setSessionId(notifyService.getSessionId(Integer.parseInt(notify.get("senderId")),Integer.parseInt(notify.get("receiverId"))));
+//        }
+//        else{
+//            message.setSessionId(Integer.parseInt(notify.get("sessionId")));
+//        }
+//        message.setSenderId(Integer.parseInt(notify.get("senderId")));
+//        message.setReceiverId(Integer.parseInt(notify.get("receiverId")));
+//        message.setMessageContent(notify.get("messageContent"));
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date time = sdf.parse(notify.get("createTime"));
+//        message.setCreateTime(time);
+//        notifyService.createNotify(message);
+//        return JsonUtils.getJSONString(code,"success");
+//    }
 
     /**------------------------订阅规则部分-----------------------------*/
     /**
@@ -244,6 +244,7 @@ public class UserNotifyController {
             int action = temp[1];
             notifyService.updateSubscriptionStatus(userId,targetType,action,entry.getValue());
         }
+
         return "success";
     }
 }

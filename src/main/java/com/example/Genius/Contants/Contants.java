@@ -14,6 +14,7 @@ import java.util.HashMap;
 public class Contants {
 
     private Contants(){}//私有化构造函数
+    public static String TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public static class cookies{
         public static final String LOGIN_TICKET_NAME = "LoginTicket";// cookies中存有用户登录token的字段名称
 

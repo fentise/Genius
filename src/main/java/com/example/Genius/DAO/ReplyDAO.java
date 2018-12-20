@@ -21,6 +21,9 @@ public interface ReplyDAO {
             " where commentId=#{commentId} order by oId desc"})
     List<Reply> selectByCommentId(@Param("commentId") int commentId);
 
+    @Select("select * from reply where oId = #{oId}")
+    Reply queryRely(@Param("oId") int oId);
+
  /*   @Update({"update ",TABLE_NAME," set status=#{status} where entityId=#{entityId} and entityType=#{entityType}"})
     void updateStatus(@Param("entityId") int entityId, @Param("entityType") int entityType,
                       @Param("status") int status);                */

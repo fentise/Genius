@@ -18,8 +18,8 @@ public class GeniusWebConfiguration implements WebMvcConfigurer {
       //TODO: 增加权限拦截，帖子详情页，发帖等操作需要登录权限
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(passportInterceptor);          //此处特别注意拦截器优先级
-        registry.addInterceptor(loginRequiredInterceptor).addPathPatterns("/user/*");
+//        registry.addInterceptor(passportInterceptor);          //此处特别注意拦截器优先级
+//        registry.addInterceptor(loginRequiredInterceptor).addPathPatterns("/user/*");
     }
 
 }

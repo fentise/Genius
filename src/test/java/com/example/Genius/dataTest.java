@@ -2,6 +2,7 @@ package com.example.Genius;
 
 import com.alibaba.fastjson.JSON;
 import com.example.Genius.Contants.Contants;
+import com.example.Genius.DAO.ReminderDAO;
 import com.example.Genius.model.*;
 import com.example.Genius.service.*;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -32,9 +34,11 @@ public class dataTest {
     private NotifyService notifyService;
     @Autowired
     private ReplyService replyService;
+    @Autowired
+    private ReminderDAO reminderDAO;
     @Test
     public void mainTest(){
-        // 产生基本数据
+         //产生基本数据
         //用户填充
         for(int i = 1;i<=20;i++){
             userService.register(String.format("userName-%d",i),String.format("%d@qq.com",i),"password",false);
@@ -62,7 +66,7 @@ public class dataTest {
                     userLike.setUserId(userId);
                     userLike.setEntityType(EntityType.ENTITY_ARTICLE);
                     likeService.like(userLike);
-                    Reminder reminder = new Reminder(userLike.getUserId(),userLike.getEntityId(), Contants.reminder.TARGET_TYPE_REPLY,Contants.reminder.ACTION_LIKE,userLike.getCreateTime());
+                    Reminder reminder = new Reminder(userLike.getUserId(),userLike.getEntityId(), Contants.reminder.TARGET_TYPE_ARTICLE,Contants.reminder.ACTION_LIKE,userLike.getCreateTime());
                     notifyService.createNotify(reminder);
                 }
                 // 其后面的5个用户评论它
@@ -93,7 +97,7 @@ public class dataTest {
                         userLike.setEntityType(EntityType.ENTITY_COMMENT);
                         likeService.like(userLike);
 
-                        reminder = new Reminder(userLike.getUserId(),userLike.getEntityId(), Contants.reminder.TARGET_TYPE_REPLY,Contants.reminder.ACTION_LIKE,userLike.getCreateTime());
+                        reminder = new Reminder(userLike.getUserId(),userLike.getEntityId(), Contants.reminder.TARGET_TYPE_COMMENT,Contants.reminder.ACTION_LIKE,userLike.getCreateTime());
                         notifyService.createNotify(reminder);
                     }
                     for(int n = 1;n<=5;n++){ // 其后5个用户回复他
@@ -131,7 +135,8 @@ public class dataTest {
                 }
             }
         }
-        // 订阅规则
+
+       //  订阅规则
         for(int i = 1;i<=20;i++){
             for(int j = 0;j<Contants.userSubscription.ROLES.size();j++){
                 int[] temp = notifyService.subscriptionReflexInverse(j);
@@ -140,39 +145,39 @@ public class dataTest {
                 notifyService.updateSubscriptionStatus(i,targetType,action,Contants.userSubscription.SUBSCRIBE);
             }
         }
+ //       reminderDAO.add(new Reminder(10,1400,5,2,new Date()));
         // 消息队列
-        HashMap<Integer,Announce> announceHashMap = new HashMap<>(); // user_notify.oId:Announce   user_notify.oId 用于设置readStatus
-        HashMap<Integer,Reminder> reminderHashMap = new HashMap<>(); // user_notify.oId:Reminder
-        HashMap<Integer,Message> messageHashMap = new HashMap<>();  // user_notify.oId:Message
-        HashMap<Integer,Integer> readStatusMap = new HashMap<>();  // user_notify.oId:readStatus
-        notifyService.getLatestNotify(1,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
-        HashMap<String,Object> announceResult = new HashMap<>();
-        HashMap<String,Object> reminderResult = new HashMap<>();
-        HashMap<String,Object> readStatusResult = new HashMap<>();
-        announceResult.put("announces",announceHashMap);
-        logger.error(JSON.toJSONString(announceResult));
-        reminderResult.put("reminders",reminderHashMap);
-        logger.error(JSON.toJSONString(reminderResult));
-        readStatusResult.put("readStatusList",readStatusMap);
-        logger.error(JSON.toJSONString(readStatusResult));
-
-        announceResult.clear();
-        reminderResult.clear();
-        readStatusResult.clear();
-        announceHashMap.clear();
-        reminderHashMap.clear();
-        messageHashMap.clear();
-        readStatusMap.clear();
-        notifyService.pullReminder(1);
-        notifyService.getLatestNotify(1,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
-        announceResult.put("announces",announceHashMap);
-        logger.error(JSON.toJSONString(announceResult));
-        reminderResult.put("reminders",reminderHashMap);
-        logger.error(JSON.toJSONString(reminderResult));
-        readStatusResult.put("readStatusList",readStatusMap);
-        logger.error(JSON.toJSONString(readStatusResult));
+//        HashMap<Integer,String> announceHashMap = new HashMap<>(); // user_notify.oId:Announce   user_notify.oId 用于设置readStatus
+//        HashMap<Integer,String> reminderHashMap = new HashMap<>(); // user_notify.oId:Reminder
+//        HashMap<Integer,Message> messageHashMap = new HashMap<>();  // user_notify.oId:Message
+//        HashMap<Integer,Integer> readStatusMap = new HashMap<>();  // user_notify.oId:readStatus
+//        notifyService.getLatestNotify(2,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
+//        HashMap<String,Object> announceResult = new HashMap<>();
+//        HashMap<String,Object> reminderResult = new HashMap<>();
+//        HashMap<String,Object> readStatusResult = new HashMap<>();
+//        announceResult.put("announces",announceHashMap);
+//        logger.error(JSON.toJSONString(announceResult));
+//        reminderHashMap.forEach((k,v)->{logger.error(k + " = " + v);});
+//        reminderResult.put("reminders",reminderHashMap);
+//        logger.error(JSON.toJSONString(reminderResult));
+//        readStatusResult.put("readStatusList",readStatusMap);
+//        logger.error(JSON.toJSONString(readStatusResult));
+//        logger.error("----------------------------------------------");
+//        announceResult.clear();
+//        reminderResult.clear();
+//        readStatusResult.clear();
+//        announceHashMap.clear();
+//        reminderHashMap.clear();
+//        messageHashMap.clear();
+//        readStatusMap.clear();
+//        notifyService.pullReminder(2);
+//        notifyService.getLatestNotify(2,announceHashMap,reminderHashMap,messageHashMap,readStatusMap);
+//        reminderHashMap.forEach((k,v)->{logger.error(k + " = " + v);});
+//        announceResult.put("announces",announceHashMap);
+//        logger.error(JSON.toJSONString(announceResult));
+//        reminderResult.put("reminders",reminderHashMap);
+//        logger.error(JSON.toJSONString(reminderResult));
+//        readStatusResult.put("readStatusList",readStatusMap);
+//        logger.error(JSON.toJSONString(readStatusResult));
     }
-
-
-
 }
