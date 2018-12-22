@@ -43,4 +43,8 @@ public class CommentService {
     public void updateCommentReplyCount(int commentId,int count) {
         commentDAO.updateReplyCount(commentId,count);
     }
+
+    public int getCommentStatusById(int userId,int entityId,int entityType) {
+        return commentDAO.getCommentStatusById(userId, entityId, entityType) > 0 ? 1 : 0;
+    }
 }

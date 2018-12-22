@@ -14,12 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.Map;
 
 @Controller
 public class CommentController {
 
-    @Autowired
-    HostHolder hostHolder;
+//    @Autowired
+//    HostHolder hostHolder;
 
     @Autowired
     CommentService commentService;
@@ -34,22 +35,27 @@ public class CommentController {
 
     @RequestMapping(path = {"/addComment"}, method = {RequestMethod.POST})
     @ResponseBody
-    public String addComment(@RequestParam("articleId") int articleId,
-                             @RequestParam("content") String content){
+    public String addComment(@RequestBody Map<String,Object> map){
         try{
+
+            int articleId = (Integer) map.get("articleId");
+            String content = map.get("content").toString();
+            String userId = map.get("userId").toString();
+
             Comment comment = new Comment();
 
-            if(hostHolder.getCurrentUser() != null) {  // 判断当前是否有登录的用户，设置评论的发布者
-                comment.setUserId(hostHolder.getCurrentUser().getoId());
-            }else {
-                JSONObject jsonObject = new JSONObject();
+//            if(hostHolder.getCurrentUser() != null) {  // 判断当前是否有登录的用户，设置评论的发布者
+//                comment.setUserId(hostHolder.getCurrentUser().getoId());
+//            }else {
+//                JSONObject jsonObject = new JSONObject();
+//
+//                jsonObject.put("code",1);
+//                jsonObject.put("msg","用户未登录");          // 同样，此处可以做登录跳转
+//
+//                return jsonObject.toJSONString();
+//            }
 
-                jsonObject.put("code",1);
-                jsonObject.put("msg","用户未登录");          // 同样，此处可以做登录跳转
-
-                return jsonObject.toJSONString();
-            }
-
+            comment.setUserId(Integer.parseInt(userId));
             comment.setCommentReplyCount(0);
             comment.setCreateTime(new Date());
             comment.setLikeCount(0);
@@ -63,12 +69,12 @@ public class CommentController {
             articleService.updateArticleCommentCount(comment.getEntityId(),count);
 
             // 用户评论时，生成对帖子发布者的提醒
-            Reminder reminder = new Reminder(hostHolder.getCurrentUser().getoId(),comment.getEntityId(), Contants.reminder.TARGET_TYPE_ARTICLE,Contants.reminder.ACTION_COMMENT,comment.getCreateTime());
+            Reminder reminder = new Reminder(Integer.parseInt(userId),comment.getEntityId(), Contants.reminder.TARGET_TYPE_ARTICLE,Contants.reminder.ACTION_COMMENT,comment.getCreateTime());
             notifyService.createNotify(reminder);
-
+            return GeneralUtils.getJSONString(0,"成功");
         }catch (Exception e) {
             logger.error("增加评论失败" + e.getMessage());
         }
-        return GeneralUtils.getJSONString(0);
+        return GeneralUtils.getJSONString(1,"出现异常");
     }
 }

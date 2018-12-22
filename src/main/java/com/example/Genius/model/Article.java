@@ -7,7 +7,7 @@ public class Article {
     private String articleTitle;
     private int articleAuthorId;
     private String articleContent;
-    private int articleReplyCount;
+    private int articleReplyCount;           //  文章评论数
     private int articleLikeCount;
     private int articleViewCount;
     private int articleTopicId;              // 对应的主题分区

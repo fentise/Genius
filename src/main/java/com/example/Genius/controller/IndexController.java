@@ -3,24 +3,21 @@ package com.example.Genius.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.Genius.Contants.Contants;
-import com.example.Genius.model.Article;
-import com.example.Genius.model.EntityType;
-import com.example.Genius.model.User;
-import com.example.Genius.model.ViewObject;
+import com.example.Genius.model.*;
 import com.example.Genius.service.ArticleService;
+import com.example.Genius.service.CommentService;
 import com.example.Genius.service.LikeService;
 import com.example.Genius.service.UserService;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.ListView;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class IndexController {
@@ -34,48 +31,134 @@ public class IndexController {
     @Autowired
     LikeService likeService;
 
-    /**
-     *
-     * @param order ： 排序方式，默认为0，表示按时间排序
-     * @param theme ： 文章主题，默认为0，表示不分区
-     * @return
-     */
+//    @Autowired
+//    HostHolder hostHolder;
+
+    @Autowired
+    CommentService commentService;
+
     @RequestMapping(value={"/"},method={RequestMethod.POST})
     @ResponseBody
-    String indexPage(@RequestParam(value = "order",defaultValue = "0") int order,
-                     @RequestParam(value = "theme",defaultValue = "0") int theme){
+    public String indexPage(@RequestBody Map<String,Object> map){
 
-        List<ViewObject> vos = getArticles(0,0,100,order,theme);         //  获取文章列表
+        System.out.println("sortType : " + (Integer) map.get("sortType"));
+        System.out.println("themeType : " + (Integer)map.get("themeType"));
+        System.out.println("userId : " + map.get("userId").toString());
+
+        if(StringUtils.isEmpty(map.get("userId").toString()))
+            System.out.println("yes");
+
+        List<ViewObject> vos = getArticles(0,0,100,(Integer) map.get("sortType"),(Integer)map.get("themeType"));         //  获取文章列表
 
         JSONObject jsonObject = new JSONObject();
 
         JSONArray jsonArray = new JSONArray();
 
-        for(ViewObject vo : vos) {
-            JSONObject object = new JSONObject();
-            object.put("userId",((User) vo.get("user")).getoId());
-            object.put("userNickNAme",((User) vo.get("user")).getUserNickname());
-            object.put("userProfilePhoto",((User) vo.get("user")).getUserProfilePhoto());
+//        for(ViewObject vo : vos) {
+//            JSONObject object = new JSONObject();
+//            object.put("userId",((User) vo.get("user")).getoId());
+//            object.put("userNickNAme",((User) vo.get("user")).getUserNickname());
+//            object.put("userProfilePhoto",((User) vo.get("user")).getUserProfilePhoto());
+//
+//            Article article = ((Article) vo.get("article"));
+//            object.put("articleId",article.getoId());
+//            object.put("articleTitle",article.getArticleTitle());
+//            object.put("articleReplyCount",article.getArticleReplyCount());
+//            object.put("articleLikeCount",likeService.getLikeCount(EntityType.ENTITY_ARTICLE,article.getoId()));
+//            object.put("latestUpdateTime",Contants.DATEFORMAT.format(article.getLatestUpdateTime()));
+//
+//            StringBuilder test = new StringBuilder();
+//            if(((Article)vo.get("article")).getArticleContent().length() <= 20) {
+//                test.append(((Article)vo.get("article")).getArticleContent());
+//            }
+//            else {
+//                test.append(((Article)vo.get("article")).getArticleContent().substring(0,20));
+//            }
+//            test.append("...");
+//            object.put("articleContent",test.toString());
+//            jsonArray.add(object);
+//        }
+//        jsonObject.put("article",jsonArray);
+//        return jsonObject.toJSONString();
 
-            Article article = ((Article) vo.get("article"));
-            object.put("articleId",article.getoId());
-            object.put("articleTitle",article.getArticleTitle());
-            object.put("articleReplyCount",article.getArticleReplyCount());
-            object.put("articleLikeCount",likeService.getLikeCount(EntityType.ENTITY_ARTICLE,article.getoId()));
-            object.put("latestUpdateTime",Contants.DATEFORMAT.format(article.getLatestUpdateTime()));
+//        String userId = map.get("userId").toString();            //当前登录用户的id
 
-            StringBuilder test = new StringBuilder();
-            if(((Article)vo.get("article")).getArticleContent().length() <= 20) {
-                test.append(((Article)vo.get("article")).getArticleContent());
+        if(StringUtils.isEmpty(map.get("userId").toString())) {       //  若当前未登录
+
+            for(ViewObject vo : vos) {
+                JSONObject object = new JSONObject();
+
+                JSONObject pub = new JSONObject();
+
+                User user = ((User) vo.get("user"));
+                Article article = ((Article) vo.get("article"));
+                pub.put("id",article.getoId());
+                pub.put("author",user.getUserNickname());
+                pub.put("authorId",user.getoId());
+                pub.put("avatar",user.getUserProfilePhoto());
+                pub.put("title",article.getArticleTitle());
+
+                StringBuilder test = new StringBuilder();
+                if(((Article)vo.get("article")).getArticleContent().length() <= 20) {
+                    test.append(article.getArticleContent());
+                }
+                else {
+                    test.append(article.getArticleContent().substring(0,20));
+                }
+                test.append("...");
+
+                pub.put("content",test.toString());
+                pub.put("datetime",Contants.DATEFORMAT.format(article.getLatestUpdateTime()));
+                pub.put("likeNum",likeService.getLikeCount(EntityType.ENTITY_ARTICLE,article.getoId()));
+                pub.put("replyNum",article.getArticleReplyCount());
+
+                object.put("public",pub);
+
+                jsonArray.add(object);
             }
-            else {
-                test.append(((Article)vo.get("article")).getArticleContent().substring(0,20));
-            }
-            test.append("...");
-            object.put("articleContent",test.toString());
-            jsonArray.add(object);
         }
-        jsonObject.put("article",jsonArray);
+        else{
+            for(ViewObject vo : vos) {
+                JSONObject object = new JSONObject();
+
+                JSONObject pub = new JSONObject();
+                JSONObject action = new JSONObject();
+
+                User user = ((User) vo.get("user"));
+                Article article = ((Article) vo.get("article"));
+                pub.put("id",article.getoId());
+                pub.put("author",user.getUserNickname());
+                pub.put("authorId",user.getoId());
+                pub.put("avatar",user.getUserProfilePhoto());
+                pub.put("title",article.getArticleTitle());
+
+                StringBuilder test = new StringBuilder();
+                if(((Article)vo.get("article")).getArticleContent().length() <= 20) {
+                    test.append(article.getArticleContent());
+                }
+                else {
+                    test.append(article.getArticleContent().substring(0,20));
+                }
+                test.append("...");
+
+                pub.put("content",test.toString());
+                pub.put("datetime",Contants.DATEFORMAT.format(article.getLatestUpdateTime()));
+                pub.put("likeNum",likeService.getLikeCount(EntityType.ENTITY_ARTICLE,article.getoId()));
+                pub.put("replyNum",article.getArticleReplyCount());
+
+                object.put("public",pub);
+
+                /*
+                1表示喜欢或回复过， 0 表示 不喜欢
+                 */
+                action.put("likeThis",likeService.getLikeStatus(Integer.parseInt(map.get("userId").toString()),EntityType.ENTITY_ARTICLE,article.getoId()));
+                action.put("repliedThis",commentService.getCommentStatusById(Integer.parseInt(map.get("userId").toString()),article.getoId(),EntityType.ENTITY_ARTICLE));
+
+                object.put("myActions",action);
+                jsonArray.add(object);
+            }
+        }
+        jsonObject.put("postCard",jsonArray);
         return jsonObject.toJSONString();
     }
 
@@ -117,7 +200,6 @@ public class IndexController {
         jsonObject.put("article",jsonArray);
         return jsonObject.toJSONString();
     }
-
 
 
     public List<ViewObject> getArticles(int articleAuthorId, int offset, int limit,int order,int theme) {

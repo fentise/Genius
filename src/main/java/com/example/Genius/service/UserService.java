@@ -24,124 +24,148 @@ public class UserService {
     private LoginTicketDAO loginTicketDAO;
 
     /**
-    * @param
-    * @return map<String,Object>当注册成功是带有键为“loginTicket"的键值对，不然则返回键为“msg”的键值对
-    * */
-    public Map<String,Object> register(String userNickname, String userEmail, String password,Boolean rememberMe){
-        Map<String,Object> map = new HashMap<String,Object>();
-        try{
-            if(StringUtils.isEmpty(userEmail)){
-                map.put("msg","登录邮箱不能为空");
-                return map;
-            }
-            if(!GeneralUtils.isEmailAddress(userEmail)){
-                map.put("msg","邮箱格式非法");
-                return map;
-            }
-            if(userDAO.selectByUserEmail(userEmail) != null){
-                map.put("msg","该邮箱已被注册");
-                return map;
-            }
-            if(StringUtils.isEmpty(password)) {
-                map.put("msg", "登录密码不能为空");
-                return map;
-            }
-            if(userNickname == null){
-                map.put("msg","用户名不能为空");
-                return map;
-            }
-            User user = new User();
-            user.setUserNickname(userNickname);
-            user.setUserEmail(userEmail);
-            //均默认为0
-            user.setUserRole(0);
-            user.setUserStatus(0);
-            String userProfilePhoto = String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000));
-            //String userProfilePhoto = String.format("h%d", new Random().nextInt(1000));
-            user.setUserProfilePhoto(userProfilePhoto);
-
-            user.setUserSalt(UUID.randomUUID().toString().substring(0, 5));
-            user.setUserPassword(GeneralUtils.MD5(password+user.getUserSalt()));
-            userDAO.add(user);
-            String loginTicket = addLoginTicket(userDAO.selectByUserEmail(userEmail).getoId(),rememberMe);
-            map.put(Contants.cookies.LOGIN_TICKET_NAME,loginTicket);
-            return map;
-            }
-        catch(Exception e) {
-            logger.error("Fail to insert new user into database : " + e.getMessage());
-            map.put("msg", "fail to insert new user into database");
+     * @param
+     * @return map<String,Object>当注册成功是带有键为“loginTicket"的键值对，不然则没有
+     * */
+    public Map<String,Object> register(String userNickname, String userEmail, String password) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (userDAO.selectByUserEmail(userEmail) != null) {
+            map.put("msg", "emailHasExit");
             return map;
         }
+        User user = new User();
+        user.setUserNickname(userNickname);
+        user.setUserEmail(userEmail);
+
+        //均默认为0
+        user.setUserRole(0);
+        user.setUserStatus(0);
+
+        String userProfilePhoto = String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000));
+        //String userProfilePhoto = String.format("h%d", new Random().nextInt(1000));
+        user.setUserProfilePhoto(userProfilePhoto);
+
+        user.setUserSalt(UUID.randomUUID().toString().substring(0, 5));
+        user.setUserPassword(GeneralUtils.MD5(password + user.getUserSalt()));
+        userDAO.add(user);
+        map.put("code", 1);
+        return map;
     }
 
+//        try{
+//
+//            if(StringUtils.isEmpty(userEmail)){
+//                map.put("msg","登录邮箱不能为空");
+//                return map;
+//            }
+//            if(!GeneralUtils.isEmailAddress(userEmail)){
+//                map.put("msg","邮箱格式非法");
+//                return map;
+//            }
+//            if(userDAO.selectByUserEmail(userEmail) != null){
+//                map.put("msg","该邮箱已被注册");
+//                return map;
+//            }
+//            if(StringUtils.isEmpty(password)) {
+//                map.put("msg", "登录密码不能为空");
+//                return map;
+//            }
+//            if(userNickname == null){
+//                map.put("msg","用户名不能为空");
+//                return map;
+//            }
+//            //logger.error("nickName="+userNickname);
+//            User user = new User();
+//            user.setUserNickname(userNickname);
+//            user.setUserEmail(userEmail);
+//
+//            //均默认为0
+//            user.setUserRole(0);
+//            user.setUserStatus(0);
+//
+//            String userProfilePhoto = String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000));
+//            //String userProfilePhoto = String.format("h%d", new Random().nextInt(1000));
+//            user.setUserProfilePhoto(userProfilePhoto);
+//
+//            user.setUserSalt(UUID.randomUUID().toString().substring(0, 5));
+//            user.setUserPassword(GeneralUtils.MD5(password+user.getUserSalt()));
+//            userDAO.add(user);
+//            //return this.userMapper.add(user);
+//
+//            //   User user1 = userMapper.selectByUserEmail(userEmail);
+//
+////            String loginTicket = addLoginTicket(userDAO.selectByUserEmail(userEmail).getoId(),false);
+////            map.put(Contants.cookies.LOGIN_TICKET_NAME,loginTicket);
+//            return map;
+//        }
+//        catch(Exception e) {
+//            logger.error("Fail to insert new user into database : " + e.getMessage());
+//            map.put("msg", "fail to insert new user into database");
+//            return map;
+//        }
 
-    public Map<String,Object> login(String userEmail,String password,boolean rememberMe){
+
+    public Map<String,Object> login(String userEmail,String password){
         Map<String,Object> map = new HashMap<String,Object>();
-        if(StringUtils.isEmpty(userEmail)){
-            map.put("msg","登录邮箱不能为空");
-            return map;
-        }
-        if(!GeneralUtils.isEmailAddress(userEmail)){
-            map.put("msg","邮箱格式非法");
-            return map;
-        }
-        if(StringUtils.isEmpty(password)) {
-            map.put("msg", "登录密码不能为空");
-            return map;
-        }
+//        if(StringUtils.isEmpty(userEmail)){
+//            map.put("msg","登录邮箱不能为空");
+//            return map;
+//        }
+//        if(!GeneralUtils.isEmailAddress(userEmail)){
+//            map.put("msg","邮箱格式非法");
+//            return map;
+//        }
+//        if(StringUtils.isEmpty(password)) {
+//            map.put("msg", "登录密码不能为空");
+//            return map;
+//        }
         User user = userDAO.selectByUserEmail(userEmail);
 
         if( user == null){
-            map.put("msg","该邮箱未被注册");
+            map.put("msg","NoUser");
             return map;
         }
         if(!user.getUserPassword().equals(GeneralUtils.MD5(password+user.getUserSalt()))){
-            map.put("msg","登录密码不正确");
+            map.put("msg","WrongPassword");
             return map;
         }
 
         /**
          * 表明用户成功登陆，就像用户下发ticket
          */
-        String loginTicket = addLoginTicket(user.getoId(),rememberMe);
-        map.put(Contants.cookies.LOGIN_TICKET_NAME,loginTicket);          // 下发ticket
+        map.put("userId",user.getoId());
         return map;
+    //    String loginTicket = addLoginTicket(user.getoId(),rememberMe);
+    //    map.put(Contants.cookies.LOGIN_TICKET_NAME,loginTicket);          // 下发ticket
     }
 
-    /**
-     * @Description: 新增loginTicket
-     * @param: userId
-     * @param: rememberMe 是否记住我，记住的话有更长的过期时间
- * @return: java.lang.String
-     */
-    private String addLoginTicket(int userId,boolean rememberMe){ // TODO：应先检查当前用户是否已有login状态的loginTicket，存在的话更新其过期时间，不存在的话下发新的。不然的话旧的loginTicket仍旧起效
-        LoginTicket loginTicket = new LoginTicket();
-        loginTicket.setUserId(userId);
-        Date date = new Date();
-        if(rememberMe){
-            date.setTime(date.getTime()+1000*3600*24*7);//默认保持七天有效期 TODO:当用户一直不下线时需要主动重设有效期
-            loginTicket.setExpired(date);
-        }else{
-            date.setTime(date.getTime()+1000*3600*24);//默认保持一天 TODO:其实这里应该设置为离线后保持五分钟的免登录时间
-            loginTicket.setExpired(date);
-        }
-        loginTicket.setStatus(Contants.loginTicket.LOGIN_STATUS);
-        loginTicket.setTicket(UUID.randomUUID().toString().replaceAll("-",""));
-        loginTicketDAO.add(loginTicket);
-        return loginTicket.getTicket();
-    }
-
-    /**
-     * @Description: 登出，将loginTicker的状态设为登出状态
-     * @param: loginTicket
- * @return: boolean
-     */
-    public boolean logout(String loginTicket){
-        loginTicketDAO.updateStatus(loginTicket,Contants.loginTicket.LOGOUT_STATUS);
-        return true;
-    }
+//    private String addLoginTicket(int userId,boolean rememberMe){
+//        LoginTicket loginTicket = new LoginTicket();
+//        loginTicket.setUserId(userId);
+//        Date date = new Date();
+//        if(rememberMe){
+//            date.setTime(date.getTime()+1000*3600*24*7);//默认保持七天有效期 TODO:当用户一直不下线时需要主动重设有效期
+//            loginTicket.setExpired(date);
+//        }else{
+//            date.setTime(date.getTime()+1000*3600*24);//默认保持一天 TODO:其实这里应该设置为离线后保持五分钟的免登录时间
+//            loginTicket.setExpired(date);
+//        }
+//        loginTicket.setStatus(Contants.loginTicket.LOGIN_STATUS);
+//        loginTicket.setTicket(UUID.randomUUID().toString().replaceAll("-",""));
+//        loginTicketDAO.add(loginTicket);
+//        return loginTicket.getTicket();
+//    }
+//
+//    public boolean logout(String loginTicket){
+//        loginTicketDAO.updateStatus(loginTicket,Contants.loginTicket.LOGOUT_STATUS);
+//        return true;
+//    }
 
     public User getUserById(int id) {
         return userDAO.selectByUserId(id);
+    }
+
+    public User getUserByEmail(String email) {
+        return userDAO.selectByUserEmail(email);
     }
 }

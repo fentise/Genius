@@ -23,9 +23,9 @@ public class LikeService {
 
     public int getLikeStatus(int userId,int entityType,int entityId) {         // 获得喜欢状态0(喜欢)， 1(不喜欢)
         if(likeDAO.getStatus(userId,entityId,entityType).isEmpty()) {
-            return 1;            // 表明用户未点击或喜欢
+            return 0;            // 表明用户未点击或喜欢
         }
-        return likeDAO.getStatus(userId,entityId,entityType).indexOf(0);
+        return likeDAO.getStatus(userId,entityId,entityType).indexOf(0) == 0 ? 1 : 0;
     }
 
     public int like(UserLike userLike) {

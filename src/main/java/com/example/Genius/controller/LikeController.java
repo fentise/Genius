@@ -10,18 +10,16 @@ import com.example.Genius.service.NotifyService;
 import com.example.Genius.utils.GeneralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.Map;
 
 @Controller
 public class LikeController {
 
-    @Autowired
-    HostHolder hostHolder;        // 登陆拦截器中存储的用户，ThreadLocal<User>
+//    @Autowired
+//    HostHolder hostHolder;        // 登陆拦截器中存储的用户，ThreadLocal<User>
 
     @Autowired
     LikeService likeService;
@@ -30,13 +28,17 @@ public class LikeController {
     private NotifyService notifyService;
     @RequestMapping(path={"/likeComment"},method={RequestMethod.POST})
     @ResponseBody
-    public String likeComment(@RequestParam("commentId") int commentId){
-        if(hostHolder.getCurrentUser() == null) {
-            return GeneralUtils.getJSONString(1,"用户未登录");
-        }
+    public String likeComment(@RequestBody Map<String,Object> map){
+
+        String userId = map.get("userId").toString();
+        int commentId = (Integer)map.get("commentId");
+
+//        if(hostHolder.getCurrentUser() == null) {
+//            return GeneralUtils.getJSONString(1,"用户未登录");
+//        }
 
         UserLike userLike = new UserLike();
-        userLike.setUserId(hostHolder.getCurrentUser().getoId());
+        userLike.setUserId(Integer.parseInt(userId));
         userLike.setCreateTime(new Date());
         userLike.setEntityId(commentId);
         userLike.setEntityType(EntityType.ENTITY_COMMENT);
@@ -53,24 +55,31 @@ public class LikeController {
 
     @RequestMapping(path={"/dislikeCommment"},method={RequestMethod.POST})
     @ResponseBody
-    public String dislikeComment(@RequestParam("commentId") int commentId){
-        if(hostHolder.getCurrentUser() == null) {
-            return GeneralUtils.getJSONString(1,"用户未登录");
-        }
+    public String dislikeComment(@RequestBody Map<String,Object> map){
 
-        long likeCount = likeService.dislike(hostHolder.getCurrentUser().getoId(), EntityType.ENTITY_COMMENT,commentId);
+        String userId = map.get("userId").toString();
+        int commentId = (Integer)map.get("commentId");
+
+//        if(hostHolder.getCurrentUser() == null) {
+//            return GeneralUtils.getJSONString(1,"用户未登录");
+//        }
+
+        long likeCount = likeService.dislike(Integer.parseInt(userId), EntityType.ENTITY_COMMENT,commentId);
         return GeneralUtils.getJSONString(0,String.valueOf(likeCount));
     }
 
     @RequestMapping(path={"/likeArticle"},method={RequestMethod.POST})
     @ResponseBody
-    public String likeArticle(@RequestParam("articleId") int articleId){
-        if(hostHolder.getCurrentUser() == null) {
-            return GeneralUtils.getJSONString(1,"用户未登录");
-        }
+    public String likeArticle(@RequestBody Map<String,Object> map){
 
+        String userId = map.get("userId").toString();
+        int articleId = (Integer)map.get("articleId");
+
+//        if(hostHolder.getCurrentUser() == null) {
+//            return GeneralUtils.getJSONString(1,"用户未登录");
+//        }
         UserLike userLike = new UserLike();
-        userLike.setUserId(hostHolder.getCurrentUser().getoId());
+        userLike.setUserId(Integer.parseInt(userId));
         userLike.setCreateTime(new Date());
         userLike.setEntityId(articleId);
         userLike.setEntityType(EntityType.ENTITY_ARTICLE);
@@ -87,24 +96,30 @@ public class LikeController {
 
     @RequestMapping(path={"/dislikeArticle"},method={RequestMethod.POST})
     @ResponseBody
-    public String dislikeArticle(@RequestParam("articleId") int articleId){
-        if(hostHolder.getCurrentUser() == null) {
-            return GeneralUtils.getJSONString(1,"用户未登录");
-        }
+    public String dislikeArticle(@RequestBody Map<String,Object> map){
 
-        long likeCount = likeService.dislike(hostHolder.getCurrentUser().getoId(), EntityType.ENTITY_ARTICLE,articleId);
+        String userId = map.get("userId").toString();
+        int articleId = (Integer)map.get("articleId");
+
+//        if(hostHolder.getCurrentUser() == null) {
+//            return GeneralUtils.getJSONString(1,"用户未登录");
+//        }
+
+        long likeCount = likeService.dislike(Integer.parseInt(userId), EntityType.ENTITY_ARTICLE,articleId);
         return GeneralUtils.getJSONString(0,String.valueOf(likeCount));
     }
 
     @RequestMapping(path={"/likeReply"},method={RequestMethod.POST})
     @ResponseBody
-    public String likeReply(@RequestParam("replyId") int replyId){
-        if(hostHolder.getCurrentUser() == null) {
-            return GeneralUtils.getJSONString(1,"用户未登录");
-        }
+    public String likeReply(@RequestBody Map<String,Object> map){
+//        if(hostHolder.getCurrentUser() == null) {
+//            return GeneralUtils.getJSONString(1,"用户未登录");
+//        }
+        String userId = map.get("userId").toString();
+        int replyId = (Integer)map.get("replyId");
 
         UserLike userLike = new UserLike();
-        userLike.setUserId(hostHolder.getCurrentUser().getoId());
+        userLike.setUserId(Integer.parseInt(userId));
         userLike.setCreateTime(new Date());
         userLike.setEntityId(replyId);
         userLike.setEntityType(EntityType.ENTITY_REPLY);
@@ -121,12 +136,15 @@ public class LikeController {
 
     @RequestMapping(path={"/dislikeReply"},method={RequestMethod.POST})
     @ResponseBody
-    public String dislikeReply(@RequestParam("replyId") int replyId){
-        if(hostHolder.getCurrentUser() == null) {
-            return GeneralUtils.getJSONString(1,"用户未登录");
-        }
+    public String dislikeReply(@RequestBody Map<String,Object> map){
 
-        long likeCount = likeService.dislike(hostHolder.getCurrentUser().getoId(), EntityType.ENTITY_REPLY,replyId);
+        String userId = map.get("userId").toString();
+        int replyId = (Integer)map.get("replyId");
+//        if(hostHolder.getCurrentUser() == null) {
+//            return GeneralUtils.getJSONString(1,"用户未登录");
+//        }
+
+        long likeCount = likeService.dislike(Integer.parseInt(userId), EntityType.ENTITY_REPLY,replyId);
         return GeneralUtils.getJSONString(0,String.valueOf(likeCount));
     }
 }

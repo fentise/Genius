@@ -10,19 +10,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ReplyController {
 
-    @Autowired
-    HostHolder hostHolder;         // 查看当前登录用户
+//    @Autowired
+//    HostHolder hostHolder;         // 查看当前登录用户
 
     @Autowired
     ReplyService replyService;
@@ -39,31 +37,33 @@ public class ReplyController {
     private NotifyService notifyService;
     private static final Logger logger = LoggerFactory.getLogger(ReplyController.class);
 
-    /**
-     *
-     * @param targetId : 对方用户的id
-     * @param content : 回复内容
-     * @return
-     */
     @RequestMapping(path = {"/addReply"}, method = {RequestMethod.POST})
     @ResponseBody
-    public String addReply(@RequestParam("targetId") int targetId,
-                             @RequestParam("commentId") int commentId,
-                             @RequestParam("content") String content){
+    public String addReply(@RequestBody Map<String,Object> map){
         try{
+
+            String userId = map.get("userId").toString();
+
+            String content = map.get("content").toString();
+
+            int targetId = (Integer) map.get("targetId");
+
+            int commentId = (Integer)map.get("commentId");
+
             Reply reply = new Reply();
 
-            if(hostHolder.getCurrentUser() != null) {  // 判断当前是否有登录的用户，设置评论的发布者
-                reply.setUserId(hostHolder.getCurrentUser().getoId());
-            }else {
-                JSONObject jsonObject = new JSONObject();
+//            if(hostHolder.getCurrentUser() != null) {  // 判断当前是否有登录的用户，设置评论的发布者
+//                reply.setUserId(hostHolder.getCurrentUser().getoId());
+//            }else {
+//                JSONObject jsonObject = new JSONObject();
+//
+//                jsonObject.put("code",1);
+//                jsonObject.put("msg","用户未登录");          // 同样，此处可以做登录跳转
+//
+//                return jsonObject.toJSONString();
+//            }
 
-                jsonObject.put("code",1);
-                jsonObject.put("msg","用户未登录");          // 同样，此处可以做登录跳转
-
-                return jsonObject.toJSONString();
-            }
-
+            reply.setUserId(Integer.parseInt(userId));
             reply.setReplyContent(content);
             reply.setLikeCount(0);
             reply.setCreateTime(new Date());
@@ -77,18 +77,21 @@ public class ReplyController {
             commentService.updateCommentReplyCount(commentId,count);
 
             // 新增回复的同时，增加对评论发布者的提醒
-            Reminder reminder = new Reminder(hostHolder.getCurrentUser().getoId(),reply.getCommentId(),Contants.reminder.TARGET_TYPE_COMMENT,Contants.reminder.ACTION_REPLY,reply.getCreateTime());
+            Reminder reminder = new Reminder(Integer.parseInt(userId),reply.getCommentId(),Contants.reminder.TARGET_TYPE_COMMENT,Contants.reminder.ACTION_REPLY,reply.getCreateTime());
             notifyService.createNotify(reminder);
 
+            return GeneralUtils.getJSONString(0,"成功");
         }catch (Exception e) {
             logger.error("增加回复失败" + e.getMessage());
         }
-        return GeneralUtils.getJSONString(0);
+        return GeneralUtils.getJSONString(0,"出现异常");
     }
 
     @RequestMapping(path = {"/showReply"},method = {RequestMethod.POST})
     @ResponseBody
-    public String showReply(@RequestParam("commentId") int commentId) {
+    public String showReply(@RequestBody Map<String,Object> map) {
+
+        int commentId = (Integer) map.get("commentId");
 
         List<Reply> replyList = replyService.selectBycommentID(commentId);
 

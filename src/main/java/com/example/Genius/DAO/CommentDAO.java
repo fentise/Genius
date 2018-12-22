@@ -3,7 +3,6 @@ package com.example.Genius.DAO;
 
 import com.example.Genius.model.Comment;
 import org.apache.ibatis.annotations.*;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -33,8 +32,9 @@ public interface CommentDAO {
     @Select({"select count(oId) from ", TABLE_NAME, " where entityId=#{entityId} and entityType=#{entityType}"})
     int getCommentCount(@Param("entityId") int entityId,@Param("entityType") int entityType);
 
-    @Update({"update ",TABLE_NAME," set commentReplyCount=#{commentReplyCount} where commentId=#{commentId}"})
-    void updateReplyCount(@Param("commentId") int commentId,@Param("commentReplyCount") int commentReplyCount);
+    @Update({"update ",TABLE_NAME," set commentReplyCount=#{commentReplyCount} where oId=#{oId}"})
+    void updateReplyCount(@Param("oId") int commentId,@Param("commentReplyCount") int commentReplyCount);
 
-
+    @Select({"select count(oId) from ", TABLE_NAME, " where userId=#{userId} and entityId=#{entityId} and entityType=#{entityType}"})
+    int getCommentStatusById(@Param("userId") int userId,@Param("entityId") int entityId,@Param("entityType") int entityType);
 }

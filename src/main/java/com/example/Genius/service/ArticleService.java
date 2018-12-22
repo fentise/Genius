@@ -40,4 +40,6 @@ public class ArticleService {
     public void updateArticleCommentCount(int id,int count) {
         articleDAO.updateCommentCount(id,count);
     }
+
+    public void updateArticleViewCount(int id,int count) {articleDAO.updateViewCount(id,count);}
 }

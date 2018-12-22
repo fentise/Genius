@@ -37,7 +37,7 @@ public class dataTest {
         // 产生基本数据
         //用户填充
         for(int i = 1;i<=20;i++){
-            userService.register(String.format("userName-%d",i),String.format("%d@qq.com",i),"password",false);
+     //       userService.register(String.format("userName-%d",i),String.format("%d@qq.com",i),"password",false);
         }
 
         for(int i = 1;i<=20;i++){

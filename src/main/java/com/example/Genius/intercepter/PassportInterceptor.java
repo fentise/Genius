@@ -45,21 +45,21 @@ public class PassportInterceptor implements HandlerInterceptor {
         if(ticket != null){
             LoginTicket loginTicket = loginTicketDAO.selectByTicket(ticket);
             if(loginTicket == null || loginTicket.getExpired().before(new Date()) || loginTicket.getStatus() != Contants.loginTicket.LOGIN_STATUS ){
-                return false;
+                return true;
             }
             User user = userDAO.selectByUserId(loginTicket.getUserId());
             hostHolder.setCurrentUsers(user);            //将当前登陆用户添加到上下文
             return true;
         }
-        return false;
+        logger.info("check fail cookies中没有ticket字段");
+        return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-//        if(modelAndView != null && hostHolder.getCurrentUser() != null)
-//            modelAndView.addObject("user", hostHolder.getCurrentUser());
-//            //FIXME：登录页面跳转时这里会报空指针异常
-            // TODO:可选择在这里返回用户id
+        if(modelAndView != null && hostHolder.getCurrentUser() != null)
+            modelAndView.addObject("user", hostHolder.getCurrentUser());
+            //FIXME：登录页面跳转时这里会报空指针异常
     }
 
     @Override

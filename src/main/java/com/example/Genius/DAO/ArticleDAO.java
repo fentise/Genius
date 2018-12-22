@@ -30,4 +30,7 @@ public interface ArticleDAO {
 
     @Update({"update ", TABLE_NAME, " set articleReplyCount=#{articleReplyCount} where oId=#{id}"})
     void updateCommentCount(@Param("id") int id, @Param("articleReplyCount") int articleReplyCount);
+
+    @Update({"update ", TABLE_NAME, " set articleViewCount=#{articleViewCount} where oId=#{id}"})
+    void updateViewCount(@Param("id") int id, @Param("articleViewCount") int articleViewCount);
 }

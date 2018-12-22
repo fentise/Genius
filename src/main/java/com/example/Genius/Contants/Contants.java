@@ -39,7 +39,7 @@ public class Contants {
         public static final int COMMENTCOUNT_ORDER = 2;        // 按评论数目排序
     }
 
-    public static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+    public static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static class userNotify{
         public static final int TYPE_ANNOUNCE = 0;
