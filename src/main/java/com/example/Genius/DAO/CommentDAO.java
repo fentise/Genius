@@ -20,6 +20,9 @@ public interface CommentDAO {
     @Options(useGeneratedKeys = true,keyColumn = "oId",keyProperty = "oId")
     int addComment(Comment comment);
 
+    @Select("select * from comment where oId = #{oId}")
+    Comment queryComment(@Param("oId") int oId);
+
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME,
             " where entityId=#{entityId} and entityType=#{entityType} order by oId desc"})
     @Options(useGeneratedKeys = true,keyColumn = "oId",keyProperty = "oId")
