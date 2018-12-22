@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.Genius.DAO.ArticleDAO">
     <sql id="table">article</sql>
-    <sql id="selectFields">oId, articleTitle, articleAuthorId, articleContent, articleURL, articleReplyCount, articleLikeCount, articleViewCount, articleTopicId, articleStatus, createTime, latestUpdateTime
+    <sql id="selectFields">oId, articleTitle, articleAuthorId, articleContent, articleReplyCount, articleLikeCount, articleViewCount, articleTopicId, articleStatus, createTime, latestUpdateTime
     </sql>
     <select id="selectLatestArticles" resultType="com.example.Genius.model.Article">
         SELECT

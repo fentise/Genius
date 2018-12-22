@@ -1,12 +1,9 @@
 package com.example.Genius.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.Genius.Contants.Contants;
 import com.example.Genius.model.HostHolder;
-import com.example.Genius.model.User;
 import com.example.Genius.service.UserService;
 import com.example.Genius.utils.GeneralUtils;
-import com.sun.deploy.util.GeneralUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,23 +23,23 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    HostHolder hostHolder;
+//    @Autowired
+//    HostHolder hostHolder;
 
-    @RequestMapping(path={"/registerAndLogin"})
-    @ResponseBody
-    public String registerAndLogin(Model model,
-                                   @RequestParam(value = "next", required = false) String next){
-        model.addAttribute("next",next);             // 跳转参数
-
-        if(!StringUtils.isEmpty(next)) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("code",1);
-            jsonObject.put("next",next);
-            return jsonObject.toJSONString();
-        }
-        return GeneralUtils.getJSONString(0);
-    }
+//    @RequestMapping(path={"/registerAndLogin"})
+//    @ResponseBody
+//    public String registerAndLogin(Model model,
+//                                   @RequestParam(value = "next", required = false) String next){
+//        model.addAttribute("next",next);             // 跳转参数
+//
+//        if(!StringUtils.isEmpty(next)) {
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("code",1);
+//            jsonObject.put("next",next);
+//            return jsonObject.toJSONString();
+//        }
+//        return GeneralUtils.getJSONString(0);
+//    }
 
     @RequestMapping(path={"/register"},method ={RequestMethod.POST})
     @ResponseBody
