@@ -106,9 +106,11 @@ public class LoginController {
             System.out.println("msg" + map.get("msg"));
         }
         else{                                               // 表明登录成功
+            int userId =(Integer) map.get("userId");
             jsonObject.put("userId",map.get("userId").toString());
             jsonObject.put("result",1);
             jsonObject.put("message","success");
+            jsonObject.put("userName",userService.getUserById(userId).getUserNickname());    // 返回名字
         }
         return jsonObject.toJSONString();
     }

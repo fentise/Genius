@@ -110,6 +110,7 @@ public class IndexController {
                 pub.put("content",test.toString());
                 pub.put("datetime",Contants.DATEFORMAT.format(article.getLatestUpdateTime()));
                 pub.put("likeNum",likeService.getLikeCount(EntityType.ENTITY_ARTICLE,article.getoId()));
+                pub.put("readNum",article.getArticleViewCount());
                 pub.put("replyNum",article.getArticleReplyCount());
 
                 object.put("public",pub);
@@ -145,6 +146,7 @@ public class IndexController {
                 pub.put("datetime",Contants.DATEFORMAT.format(article.getLatestUpdateTime()));
                 pub.put("likeNum",likeService.getLikeCount(EntityType.ENTITY_ARTICLE,article.getoId()));
                 pub.put("replyNum",article.getArticleReplyCount());
+                pub.put("readNum",article.getArticleViewCount());
 
                 object.put("public",pub);
 
