@@ -244,10 +244,10 @@ public class UserNotifyController {
      */
     @RequestMapping(value="userNotify/userSubscription/update/{userId}",method = {RequestMethod.POST})
     @ResponseBody
-    public String updateUserSubscription(@PathVariable("userId") int userId,@RequestBody HashMap<String,HashMap<Integer,Integer>> subscriptionUpdateOrigin){
-        HashMap<Integer,Integer> subscriptionUpdate = subscriptionUpdateOrigin.get("actions");
-        for(HashMap.Entry<Integer,Integer> entry:subscriptionUpdate.entrySet()){
-            int[] temp = notifyService.subscriptionReflexInverse(entry.getKey());
+    public String updateUserSubscription(@PathVariable("userId") int userId,@RequestBody HashMap<String,HashMap<String,Integer>> subscriptionUpdateOrigin){
+        HashMap<String,Integer> subscriptionUpdate = subscriptionUpdateOrigin.get("actions");
+        for(HashMap.Entry<String,Integer> entry:subscriptionUpdate.entrySet()){
+            int[] temp = notifyService.subscriptionReflexInverse(Integer.valueOf(entry.getKey().substring(1)));//去掉第一个字符，转成int
             int targetType = temp[0];
             int action = temp[1];
             notifyService.updateSubscriptionStatus(userId,targetType,action,entry.getValue());

@@ -14,6 +14,16 @@ public class Article {
     private int articleStatus;
     private Date createTime;
     private Date latestUpdateTime;
+    private String articleRawContent;
+
+
+    public String getArticleRawContent() {
+        return articleRawContent;
+    }
+
+    public void setArticleRawContent(String articleRawContent) {
+        this.articleRawContent = articleRawContent;
+    }
 
     public int getoId() { return oId; }
 

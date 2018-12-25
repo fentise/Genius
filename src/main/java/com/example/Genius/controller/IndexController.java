@@ -92,6 +92,7 @@ public class IndexController {
 
                 User user = ((User) vo.get("user"));
                 Article article = ((Article) vo.get("article"));
+
                 pub.put("id",article.getoId());
                 pub.put("author",user.getUserNickname());
                 pub.put("authorId",user.getoId());
@@ -99,17 +100,23 @@ public class IndexController {
                 pub.put("title",article.getArticleTitle());
 
                 StringBuilder test = new StringBuilder();
-                if(((Article)vo.get("article")).getArticleContent().length() <= 20) {
-                    test.append(article.getArticleContent());
-                }
-                else {
-                    test.append(article.getArticleContent().substring(0,20));
+
+                System.out.println("rawContent : " + article.getArticleRawContent());
+
+                if(!StringUtils.isEmpty(article.getArticleRawContent())){
+                    if(article.getArticleRawContent().length() <= 20) {
+                        test.append(article.getArticleRawContent());
+                    }
+                    else {
+                        test.append(article.getArticleRawContent().substring(0,20));
+                    }
                 }
                 test.append("...");
 
                 pub.put("content",test.toString());
                 pub.put("datetime",Contants.DATEFORMAT.format(article.getLatestUpdateTime()));
                 pub.put("likeNum",likeService.getLikeCount(EntityType.ENTITY_ARTICLE,article.getoId()));
+                pub.put("readNum",article.getArticleViewCount());
                 pub.put("replyNum",article.getArticleReplyCount());
 
                 object.put("public",pub);
@@ -126,25 +133,34 @@ public class IndexController {
 
                 User user = ((User) vo.get("user"));
                 Article article = ((Article) vo.get("article"));
+
                 pub.put("id",article.getoId());
                 pub.put("author",user.getUserNickname());
                 pub.put("authorId",user.getoId());
                 pub.put("avatar",user.getUserProfilePhoto());
                 pub.put("title",article.getArticleTitle());
 
+                System.out.println("rawContent : " + article.getArticleRawContent());
+
                 StringBuilder test = new StringBuilder();
-                if(((Article)vo.get("article")).getArticleContent().length() <= 20) {
-                    test.append(article.getArticleContent());
+                if(!StringUtils.isEmpty(article.getArticleRawContent())){
+                    if(article.getArticleRawContent().length() <= 20) {
+                        test.append(article.getArticleRawContent());
+                    }
+                    else {
+                        test.append(article.getArticleRawContent().substring(0,20));
+                    }
+                    test.append("...");
                 }
-                else {
-                    test.append(article.getArticleContent().substring(0,20));
+                else{
+                    test.append("rawContent为空");
                 }
-                test.append("...");
 
                 pub.put("content",test.toString());
                 pub.put("datetime",Contants.DATEFORMAT.format(article.getLatestUpdateTime()));
                 pub.put("likeNum",likeService.getLikeCount(EntityType.ENTITY_ARTICLE,article.getoId()));
                 pub.put("replyNum",article.getArticleReplyCount());
+                pub.put("readNum",article.getArticleViewCount());
 
                 object.put("public",pub);
 
@@ -187,11 +203,11 @@ public class IndexController {
             object.put("latestUpdateTime",Contants.DATEFORMAT.format(article.getLatestUpdateTime()));
 
             StringBuilder test = new StringBuilder();
-            if(((Article)vo.get("article")).getArticleContent().length() <= 20) {
-                test.append(((Article)vo.get("article")).getArticleContent());
+            if(article.getArticleRawContent().length() <= 20) {
+                test.append(article.getArticleRawContent());
             }
             else {
-                test.append(((Article)vo.get("article")).getArticleContent().substring(0,20));
+                test.append(article.getArticleRawContent().substring(0,20));
             }
             test.append("...");
             object.put("articleContent",test.toString());

@@ -156,11 +156,20 @@ public class NotifyService {
         }
         //按当前用户的订阅规则进行过滤，将过滤后的结果写入该用户的userNotify
         HashMap<Integer,HashMap<Integer,Integer>> userSubscriptionMap = getUserSubscription(userId);
-        for(Reminder reminder:reminders){
+//        for(Reminder reminder:reminders){ //不能够以这样的方式删除元素，会导致for失败，抛出java.util.ConcurrentModificationException
+//            if(userSubscriptionMap.get(reminder.getTargetType()).get(reminder.getAction()) == Contants.userSubscription.UNSUBSCRIBE){
+//                reminders.remove(reminder);//每一个reminder内部都有唯一的oId，所以使用remove方法是安全的
+//            }
+//        }
+        Iterator iterList= reminders.iterator();//List接口实现了Iterable接口
+        while(iterList.hasNext()){
+            Reminder reminder = (Reminder)iterList.next();
             if(userSubscriptionMap.get(reminder.getTargetType()).get(reminder.getAction()) == Contants.userSubscription.UNSUBSCRIBE){
-                reminders.remove(reminder);//每一个reminder内部都有唯一的oId，所以使用remove方法是安全的
+                iterList.remove();
+                //reminders.remove(reminder);//每一个reminder内部都有唯一的oId，所以使用remove方法是安全的
             }
-        }
+             }
+
         for(Reminder reminder:reminders){
             userNotifyDAO.add(new UserNotify(userId,reminder.getCreateTime(),Contants.userNotify.UNREAD,reminder.getoId(),Contants.userNotify.TYPE_REMINDER));
         }

@@ -1,7 +1,10 @@
 package com.example.Genius.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.Genius.Contants.Contants;
 import com.example.Genius.model.HostHolder;
+import com.example.Genius.model.UserNotify;
+import com.example.Genius.service.NotifyService;
 import com.example.Genius.service.UserService;
 import com.example.Genius.utils.GeneralUtils;
 import org.slf4j.Logger;
@@ -23,6 +26,8 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private NotifyService notifyService;
 //    @Autowired
 //    HostHolder hostHolder;
 
@@ -59,7 +64,14 @@ public class LoginController {
         }
         else{                                               // 表明登录成功
             jsonObject.put("result",1);
-            jsonObject.put("message","success");
+            jsonObject.put("message","success");  //注册成功的用户要订阅所有的规则
+            int userId = userService.getUserByEmail(receive.get("userEmail").toString()).getoId();
+            for(int j = 0; j< Contants.userSubscription.ROLES.size(); j++){
+                int[] temp = notifyService.subscriptionReflexInverse(j);
+                int targetType = temp[0];
+                int action = temp[1];
+                notifyService.updateSubscriptionStatus(userId,targetType,action,Contants.userSubscription.SUBSCRIBE);
+            }
         }
         return jsonObject.toJSONString();
     }
@@ -106,9 +118,11 @@ public class LoginController {
             System.out.println("msg" + map.get("msg"));
         }
         else{                                               // 表明登录成功
+            int userId =(Integer) map.get("userId");
             jsonObject.put("userId",map.get("userId").toString());
             jsonObject.put("result",1);
             jsonObject.put("message","success");
+            jsonObject.put("userName",userService.getUserById(userId).getUserNickname());    // 返回名字
         }
         return jsonObject.toJSONString();
     }

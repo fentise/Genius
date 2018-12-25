@@ -1,0 +1,16 @@
+.home-content{
+  padding-top: 50px;
+  padding-left: 350px;
+  padding-right: 300px;
+}
+.home-tag{
+  margin-bottom: 40px;
+}
+.home-content-itemTime{
+  float: right;
+  margin-right: 8px;
+}
+
+.home-footer{
+  height: 100px;
+}

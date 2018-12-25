@@ -56,6 +56,7 @@ public class ArticleController {
             article.setArticleLikeCount(0);
             article.setArticleStatus(0);
             article.setArticleAuthorId(Integer.parseInt(map.get("userId").toString()));
+            article.setArticleRawContent(map.get("rawContent").toString());
 
 //            if(hostHolder.getCurrentUser() == null) {        // 若未登录，则要求用户做登录处理，此处打算用loginRequiredInterceptor设置拦截
 //
@@ -92,15 +93,19 @@ public class ArticleController {
 
         JSONObject jsonObject = new JSONObject();
 
-         jsonObject.put("userNickname",articleUser.getUserNickname());
-         jsonObject.put("userProfilePhoto",articleUser.getUserProfilePhoto());
+        JSONObject articleObj = new JSONObject();
 
-         jsonObject.put("articleTitle",article.getArticleTitle());
-         jsonObject.put("articleContent",article.getArticleContent());
-         jsonObject.put("articleReplyCount",article.getArticleReplyCount());
-         jsonObject.put("articleLikeCount",likeService.getLikeCount(EntityType.ENTITY_ARTICLE,article.getoId()));
-         jsonObject.put("latestUpdateTime", Contants.DATEFORMAT.format(article.getLatestUpdateTime()));
-         jsonObject.put("articleViewCount",article.getArticleViewCount());
+        articleObj.put("userNickname",articleUser.getUserNickname());
+        articleObj.put("userProfilePhoto",articleUser.getUserProfilePhoto());
+
+        articleObj.put("articleTitle",article.getArticleTitle());
+        articleObj.put("articleContent",article.getArticleContent());
+        articleObj.put("articleReplyCount",article.getArticleReplyCount());
+        articleObj.put("articleLikeCount",likeService.getLikeCount(EntityType.ENTITY_ARTICLE,article.getoId()));
+        articleObj.put("latestUpdateTime", Contants.DATEFORMAT.format(article.getLatestUpdateTime()));
+        articleObj.put("articleViewCount",article.getArticleViewCount());
+
+        jsonObject.put("article",articleObj);
 
     /*   model.addAttribute("article",article);
          model.addAttribute("user",userService.getUserById(article.getArticleAuthorId()));            */

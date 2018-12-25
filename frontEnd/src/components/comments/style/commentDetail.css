@@ -1,0 +1,17 @@
+.commentDetail-content{
+  padding-left: 250px;
+  padding-right: 250px;
+  margin-top: 50px;
+}
+
+.comment-actions{
+  margin-left: 0;
+}
+.ant-comment-actions {
+    margin-top: 12px;
+    padding-left: 0;
+}
+
+.comment-editor{
+  margin-top: 200px;
+}

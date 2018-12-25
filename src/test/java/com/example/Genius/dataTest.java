@@ -40,10 +40,10 @@ public class dataTest {
     public void mainTest(){
          //产生基本数据
         //用户填充
-        for(int i = 1;i<=20;i++){
-     //       userService.register(String.format("userName-%d",i),String.format("%d@qq.com",i),"password",false);
-        }
-
+//        for(int i = 1;i<=20;i++){
+//           userService.register(String.format("userName-%d",i),String.format("%d@qq.com",i),"password");
+//        }
+//
 //        for(int i = 1;i<=20;i++){
 //            for(int j = 1;j<=5;j++){
 //                // 发帖--每个用户发5个帖子
@@ -136,15 +136,15 @@ public class dataTest {
 //            }
 //        }
 
-       //  订阅规则
-//        for(int i = 1;i<=20;i++){
-//            for(int j = 0;j<Contants.userSubscription.ROLES.size();j++){
-//                int[] temp = notifyService.subscriptionReflexInverse(j);
-//                int targetType = temp[0];
-//                int action = temp[1];
-//                notifyService.updateSubscriptionStatus(i,targetType,action,Contants.userSubscription.SUBSCRIBE);
-//            }
-//        }
+         //订阅规则
+        for(int i = 1;i<=20;i++){
+            for(int j = 0;j<Contants.userSubscription.ROLES.size();j++){
+                int[] temp = notifyService.subscriptionReflexInverse(j);
+                int targetType = temp[0];
+                int action = temp[1];
+                notifyService.updateSubscriptionStatus(i,targetType,action,Contants.userSubscription.SUBSCRIBE);
+            }
+        }
  //       reminderDAO.add(new Reminder(10,1400,5,2,new Date()));
         // 消息队列
 //        HashMap<Integer,String> announceHashMap = new HashMap<>(); // user_notify.oId:Announce   user_notify.oId 用于设置readStatus

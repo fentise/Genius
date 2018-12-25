@@ -10,13 +10,13 @@ public interface ArticleDAO {
 
     String TABLE_NAME = " article ";
     String INSERT_FIELDS = " articleTitle, articleAuthorId, articleContent, articleReplyCount, " +
-            "articleLikeCount, articleViewCount, articleTopicId, articleStatus, createTime, latestUpdateTime ";
+            "articleLikeCount, articleViewCount, articleTopicId, articleStatus, createTime, latestUpdateTime, articleRawContent ";
 
     String SELECT_FIELDS = " oId," + INSERT_FIELDS;
 
     @Insert({"insert into ",TABLE_NAME, "(", INSERT_FIELDS, ") values(#{articleTitle}, #{articleAuthorId}, #{articleContent}, " +
             "#{articleReplyCount}, #{articleLikeCount}, #{articleViewCount}, #{articleTopicId}, " +
-            "#{articleStatus}, #{createTime}, #{latestUpdateTime})"})
+            "#{articleStatus}, #{createTime}, #{latestUpdateTime}, #{articleRawContent})"})
     @Options(useGeneratedKeys = true,keyColumn = "oId",keyProperty = "oId")
     int addArticle(Article article);
 

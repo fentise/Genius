@@ -1,0 +1,15 @@
+
+.ant-checkbox-group-item {
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.checkAll{
+  font-size: 26px;
+}
+
+.button{
+  width: 150px;
+}

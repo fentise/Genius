@@ -2,16 +2,11 @@ package com.example.Genius.service;
 
 import com.example.Genius.DAO.LikeDAO;
 import com.example.Genius.model.UserLike;
-import com.example.Genius.utils.JedisAdapter;
-import com.example.Genius.utils.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LikeService {
-
-    @Autowired
-    JedisAdapter jedisAdapter;
 
     @Autowired
     LikeDAO likeDAO;

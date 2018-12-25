@@ -48,6 +48,9 @@ public class UserService {
         user.setUserSalt(UUID.randomUUID().toString().substring(0, 5));
         user.setUserPassword(GeneralUtils.MD5(password + user.getUserSalt()));
         userDAO.add(user);
+
+
+
         map.put("code", 1);
         return map;
     }
